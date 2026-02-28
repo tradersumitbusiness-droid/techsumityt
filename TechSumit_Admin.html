@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechSumit — Admin Panel</title>
+
+<style>
+:root{--bg:#070b12;--card:#0e1420;--border:#162032;--accent:#f97316;--green:#22c55e;--red:#ef4444;--blue:#38bdf8;--purple:#a78bfa;--yellow:#fbbf24;--text:#f1f5f9;--muted:#64748b;--soft:#1e2d42;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);min-height:100vh;font-family:-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;color:var(--text);}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:36px 28px;width:100%;max-width:360px;text-align:center;}
+.login-icon{font-size:52px;margin-bottom:16px;display:block;}
+.login-title{font-family:'Arial Black','Impact',sans-serif;font-size:22px;font-weight:800;margin-bottom:20px;}
+input,select,textarea{width:100%;background:#0a1220;border:1.5px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--text);font-size:14px;font-family:-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;outline:none;transition:border .2s;margin-bottom:10px;display:block;}
+input:focus,select:focus,textarea:focus{border-color:var(--purple);}
+input::placeholder,textarea::placeholder{color:var(--muted);}
+textarea{resize:vertical;min-height:80px;}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-size:14px;font-weight:700;font-family:'Arial Black','Impact',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s;margin-bottom:10px;color:#fff;}
+.btn:active{transform:scale(.98);}
+.btn-purple{background:linear-gradient(135deg,#7c3aed,#a855f7);}
+.btn-orange{background:linear-gradient(135deg,var(--accent),#fb923c);}
+.btn-green{background:linear-gradient(135deg,var(--green),#16a34a);}
+.btn-red{background:linear-gradient(135deg,var(--red),#dc2626);}
+.btn-wa{background:#25D366;}
+.btn-blue{background:linear-gradient(135deg,var(--blue),#0284c7);}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted);}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:9px;width:auto;margin-bottom:0;}
+.err-txt{color:var(--red);font-size:13px;margin-bottom:10px;display:none;}
+.admin-wrap{display:none;padding-bottom:80px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);background:rgba(7,11,18,.95);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;}
+.topbar-logo{display:flex;align-items:center;gap:8px;font-family:'Arial Black','Impact',sans-serif;font-size:16px;font-weight:800;}
+.topbar-logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#7c3aed,#a855f7);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.admin-badge{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);border-radius:99px;padding:4px 12px;font-size:11px;color:var(--purple);font-weight:600;}
+.tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;background:var(--card);}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:14px 18px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;border-bottom:2px solid transparent;transition:all .2s;}
+.tab.active{color:var(--purple);border-bottom-color:var(--purple);}
+.section{display:none;padding:20px 16px;}
+.section.active{display:block;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:16px;}
+.card-title{font-family:'Arial Black','Impact',sans-serif;font-size:15px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.label{font-size:11px;color:var(--muted);letter-spacing:1px;font-weight:600;margin-bottom:5px;display:block;margin-top:4px;}
+.code-display{font-family:'Arial Black','Impact',sans-serif;font-size:52px;font-weight:800;color:var(--yellow);text-align:center;letter-spacing:14px;padding:24px 0 12px;line-height:1;}
+.timer-bar{background:var(--soft);border-radius:99px;height:6px;overflow:hidden;margin-bottom:18px;}
+.timer-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--yellow),var(--red));transition:width 1s linear;border-radius:99px;}
+.timer-txt{text-align:center;font-size:13px;color:var(--muted);margin-bottom:12px;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat-box{background:var(--soft);border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center;}
+.stat-n{font-family:'Arial Black','Impact',sans-serif;font-size:24px;font-weight:800;color:var(--accent);}
+.stat-l{font-size:11px;color:var(--muted);margin-top:3px;}
+.course-item{background:var(--soft);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+.c-emoji{font-size:28px;flex-shrink:0;}
+.c-info{flex:1;min-width:0;}
+.c-title{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-meta{font-size:12px;color:var(--muted);margin-top:3px;}
+.c-actions{display:flex;gap:6px;flex-shrink:0;}
+.tag-live{display:inline-block;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:var(--green);border-radius:99px;padding:1px 8px;font-size:10px;font-weight:600;}
+.tag-soon{display:inline-block;background:rgba(100,116,139,.12);border:1px solid rgba(100,116,139,.25);color:var(--muted);border-radius:99px;padding:1px 8px;font-size:10px;}
+.pur-item{background:var(--soft);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;}
+.pur-top{display:flex;align-items:center;justify-content:space-between;}
+.pur-name{font-size:14px;font-weight:600;}
+.pur-time{font-size:11px;color:var(--muted);}
+.pur-course{font-size:12px;color:var(--accent);margin-top:2px;}
+/* PROMPTS */
+.prompt-field{background:var(--soft);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;}
+.prompt-field-num{font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.prompt-field input{margin-bottom:8px;}
+.prompt-field textarea{margin-bottom:0;min-height:100px;}
+.ps-card{background:var(--soft);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px;}
+.ps-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:10px;}
+.ps-name{font-family:'Arial Black','Impact',sans-serif;font-size:14px;font-weight:800;}
+.ps-meta{font-size:11px;color:var(--muted);margin-top:3px;}
+.ps-count{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.2);border-radius:99px;padding:2px 10px;font-size:11px;color:var(--accent);font-weight:600;white-space:nowrap;}
+.single-prompt{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;}
+.single-prompt:last-child{margin-bottom:0;}
+.sp-num{font-size:10px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-bottom:4px;}
+.sp-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+.sp-text{font-size:12px;color:#94a3b8;line-height:1.65;white-space:pre-wrap;word-break:break-word;}
+.sp-copy-btn{margin-top:10px;background:var(--soft);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 14px;font-size:11px;cursor:pointer;font-family:-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;width:100%;text-align:left;}
+.sp-copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:none;overflow-y:auto;padding:20px;}
+.modal-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;max-width:480px;margin:0 auto;}
+.modal-title{font-family:'Arial Black','Impact',sans-serif;font-size:17px;font-weight:800;margin-bottom:16px;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e2d42;border:1px solid var(--green);color:var(--green);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;display:none;z-index:999;font-family:-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;max-width:90vw;text-align:center;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <span class="login-icon">🛡️</span>
+    <div class="login-title">Admin Login</div>
+    <input type="password" id="adminPass" placeholder="Admin Password dalein" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="err-txt" id="loginErr">❌ Galat password!</div>
+    <button class="btn btn-purple" onclick="doLogin()">🔐 Login Karo</button>
+    <button onclick="location.href='TechSumit_Website.html'" style="background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;margin-top:6px;font-family:-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;">← Website pe Wapas Jao</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminWrap">
+  <div class="topbar">
+    <div class="topbar-logo"><div class="topbar-logo-icon">⚡</div>TECHSUMIT</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="admin-badge">🛡️ ADMIN</div>
+      <button onclick="doLogout()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:99px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;">Logout</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('code',this)">🔑 Code</button>
+    <button class="tab" onclick="showTab('courses',this)">📚 Courses</button>
+    <button class="tab" onclick="showTab('addcourse',this)">➕ Add Course</button>
+    <button class="tab" onclick="showTab('purchases',this)">💰 Purchases</button>
+    <button class="tab" onclick="showTab('prompts',this)">🧠 Prompts</button>
+  </div>
+
+  <!-- CODE TAB -->
+  <div class="section active" id="tab-code">
+    <div class="card">
+      <div class="card-title">⏱️ Current Unlock Code</div>
+      <div class="code-display" id="codeDisplay">-----</div>
+      <div class="timer-txt">Expire hoga: <span id="timerSec" style="color:var(--yellow);font-weight:700;">60s</span></div>
+      <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="btn btn-wa" onclick="shareWA()">📲 WhatsApp Pe Bhejo</button>
+        <button class="btn btn-orange" onclick="copyCode()">📋 Code Copy Karo</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Stats</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="statCourses">0</div><div class="stat-l">Courses</div></div>
+        <div class="stat-box"><div class="stat-n" id="statLive">0</div><div class="stat-l">Live</div></div>
+        <div class="stat-box"><div class="stat-n" id="statPur">0</div><div class="stat-l">Purchases</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">ℹ️ Code Kaise Use Karein</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.9;">
+        1️⃣ Student WhatsApp pe payment screenshot bhejega<br>
+        2️⃣ Aap payment verify karo<br>
+        3️⃣ Upar wala code copy karo ya WhatsApp pe bhejo<br>
+        4️⃣ Code sirf <strong style="color:var(--yellow);">1 minute</strong> valid hai — jaldi bhejo!<br>
+        5️⃣ Student code dalega aur video link milega ✅
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📤 Netlify ke liye Export Karo</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
+        Courses add/edit karne ke baad yahan se updated <strong style="color:var(--text);">TechSumit_Website.html</strong> download karo aur Netlify pe re-upload karo — sab students ko updated courses dikhenge!
+      </div>
+      <button class="btn btn-green" onclick="exportWebsite()">⬇️ Updated Website Download Karo</button>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px;">phir Netlify pe drag &amp; drop karo ✅</div>
+    </div>
+  </div>
+
+  <!-- COURSES TAB -->
+  <div class="section" id="tab-courses">
+    <div id="coursesList"></div>
+  </div>
+
+  <!-- ADD COURSE TAB -->
+  <div class="section" id="tab-addcourse">
+    <div class="card">
+      <div class="card-title">➕ Naya Course Add Karo</div>
+      <label class="label">COURSE TITLE *</label>
+      <input type="text" id="nc_title" placeholder="Jaise: Editing A to Z">
+      <label class="label">DESCRIPTION *</label>
+      <textarea id="nc_desc" placeholder="Course ke baare mein likho..."></textarea>
+      <label class="label">CATEGORY *</label>
+      <input type="text" id="nc_cat" placeholder="Jaise: Editing, AI, Automation">
+      <label class="label">EMOJI</label>
+      <input type="text" id="nc_emoji" placeholder="🎬" maxlength="4">
+      <label class="label">PRICE (₹) *</label>
+      <input type="number" id="nc_price" placeholder="99">
+      <label class="label">ORIGINAL PRICE (₹)</label>
+      <input type="number" id="nc_orig" placeholder="999">
+      <label class="label">VIDEO LINK</label>
+      <input type="url" id="nc_video" placeholder="https://drive.google.com/...">
+      <label class="label">VIDEO PASSWORD</label>
+      <input type="text" id="nc_pass" placeholder="TechSumit@123">
+      <label class="label">THUMBNAIL URL (optional)</label>
+      <input type="url" id="nc_thumb" placeholder="https://...image.jpg">
+      <label class="label">RATING</label>
+      <input type="number" id="nc_rating" placeholder="4.8" step="0.1" min="1" max="5">
+      <label class="label">REVIEWS COUNT</label>
+      <input type="number" id="nc_reviews" placeholder="2500">
+      <label class="label">BUYERS</label>
+      <input type="text" id="nc_buyers" placeholder="1.2k">
+      <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;"><input type="checkbox" id="nc_hot" style="width:auto;margin:0;"> 🔥 HOT</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;"><input type="checkbox" id="nc_new" style="width:auto;margin:0;"> ✨ NEW</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;"><input type="checkbox" id="nc_live" style="width:auto;margin:0;" checked> ✅ LIVE</label>
+      </div>
+      <button class="btn btn-green" onclick="addCourse()">✅ Course Save Karo</button>
+      <button class="btn btn-ghost" onclick="clearForm()">🗑️ Form Clear Karo</button>
+    </div>
+  </div>
+
+  <!-- PURCHASES TAB -->
+  <div class="section" id="tab-purchases">
+    <div class="card">
+      <div class="card-title">💰 Recent Purchases</div>
+      <div id="purchasesList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">➕ Manual Purchase Add Karo</div>
+      <input type="text" id="pur_name" placeholder="Student ka naam">
+      <input type="text" id="pur_phone" placeholder="Phone number (optional)">
+      <select id="pur_course" onchange="purCourseChanged()"><option value="">— Dropdown se select karo —</option></select>
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin:-4px 0 8px;">— YA —</div>
+      <input type="text" id="pur_course_manual" placeholder="Ya yahan manually course naam likho..." style="margin-bottom:10px;">
+      <button class="btn btn-green" onclick="addPurchase()">✅ Purchase Record Karo</button>
+    </div>
+  </div>
+
+  <!-- PROMPTS TAB -->
+  <div class="section" id="tab-prompts">
+    <div class="card">
+      <div class="card-title">🧠 Naya Prompt Set Banao</div>
+      <label class="label">PROMPT SET KA NAAM *</label>
+      <input type="text" id="ps_name" placeholder="Jaise: USA Automation Finance Video Prompts">
+      <label class="label">COURSE *</label>
+      <select id="ps_course" onchange="psCourseChanged()"><option value="">— Dropdown se select karo —</option></select>
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin:-4px 0 8px;">— YA —</div>
+      <input type="text" id="ps_course_manual" placeholder="Ya yahan manually course naam likho...">
+      <label class="label">DESCRIPTION (optional)</label>
+      <input type="text" id="ps_desc" placeholder="Yeh prompts kis kaam ke hain...">
+      <div id="promptFieldsArea"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <button class="btn btn-blue" style="margin-bottom:0;" onclick="addPromptField()">➕ Prompt Add Karo</button>
+        <button class="btn btn-ghost" style="margin-bottom:0;" onclick="removePromptField()">➖ Last Hatao</button>
+      </div>
+      <button class="btn btn-green" onclick="savePromptSet()">✅ Prompt Set Save Karo</button>
+    </div>
+    <div id="promptSetsList"></div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="editModal">
+  <div class="modal-card">
+    <div class="modal-title">✏️ Course Edit Karo</div>
+    <input type="hidden" id="edit_idx">
+    <label class="label">TITLE</label><input type="text" id="edit_title">
+    <label class="label">DESCRIPTION</label><textarea id="edit_desc"></textarea>
+    <label class="label">CATEGORY</label><input type="text" id="edit_cat">
+    <label class="label">EMOJI</label><input type="text" id="edit_emoji" maxlength="4">
+    <label class="label">PRICE (₹)</label><input type="number" id="edit_price">
+    <label class="label">ORIGINAL PRICE (₹)</label><input type="number" id="edit_orig">
+    <label class="label">VIDEO LINK</label><input type="url" id="edit_video">
+    <label class="label">VIDEO PASSWORD</label><input type="text" id="edit_pass">
+    <label class="label">THUMBNAIL URL</label><input type="url" id="edit_thumb">
+    <label class="label">RATING</label><input type="number" id="edit_rating" step="0.1" min="1" max="5">
+    <label class="label">REVIEWS COUNT</label><input type="number" id="edit_reviews">
+    <label class="label">BUYERS</label><input type="text" id="edit_buyers">
+    <div style="display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;"><input type="checkbox" id="edit_hot" style="width:auto;margin:0;"> 🔥 HOT</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;"><input type="checkbox" id="edit_new" style="width:auto;margin:0;"> ✨ NEW</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;"><input type="checkbox" id="edit_live" style="width:auto;margin:0;"> ✅ LIVE</label>
+    </div>
+    <button class="btn btn-green" onclick="saveEdit()">💾 Save Karo</button>
+    <button class="btn btn-ghost" onclick="closeModal()">❌ Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var ADMIN_PASS    = "TechSumitAdmin@999";
+var ADMIN_PHONE   = "919234090855";
+var UNLOCK_SECRET = "TechSumitAdmin@999";
+var promptCount   = 0;
+var timerInt;
+
+// ── LOGIN ─────────────────────────────────
+function doLogin(){
+  var p   = document.getElementById("adminPass").value;
+  var err = document.getElementById("loginErr");
+  if(p === ADMIN_PASS){
+    err.style.display = "none";
+    sessionStorage.setItem("ts_admin","1");
+    document.getElementById("loginWrap").style.display = "none";
+    document.getElementById("adminWrap").style.display = "block";
+    onAdminReady();
+  } else {
+    err.style.display = "block";
+    document.getElementById("adminPass").value = "";
+  }
+}
+
+function doLogout(){
+  sessionStorage.removeItem("ts_admin");
+  clearInterval(timerInt);
+  document.getElementById("loginWrap").style.display = "flex";
+  document.getElementById("adminWrap").style.display = "none";
+  document.getElementById("adminPass").value = "";
+}
+
+function onAdminReady(){
+  startTimer();
+  loadCourses();
+  loadPurchases();
+  updateStats();
+}
+
+window.addEventListener("load", function(){
+  if(sessionStorage.getItem("ts_admin") === "1"){
+    document.getElementById("loginWrap").style.display = "none";
+    document.getElementById("adminWrap").style.display = "block";
+    onAdminReady();
+  }
+});
+
+// ── CODE GENERATOR ────────────────────────
+var CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function hashStr(s){ var h=0; for(var i=0;i<s.length;i++){ h=Math.imul(31,h)+s.charCodeAt(i)|0; } return Math.abs(h); }
+function makeCode(slot){
+  var seed = UNLOCK_SECRET+"|UNLOCK|"+slot;
+  var h = hashStr(seed);
+  var code = "";
+  for(var i=0;i<5;i++){ code+=CHARS[h%CHARS.length]; h=Math.floor(h/CHARS.length); if(h<CHARS.length) h=hashStr(seed+i); }
+  return code;
+}
+function getCode(){ return makeCode(Math.floor(Date.now()/60000)); }
+
+function startTimer(){
+  function tick(){
+    var now = Date.now();
+    var secsLeft = Math.ceil((60000-(now%60000))/1000);
+    document.getElementById("codeDisplay").textContent = getCode();
+    document.getElementById("timerSec").textContent = secsLeft+"s";
+    document.getElementById("timerFill").style.width = ((secsLeft/60)*100)+"%";
+  }
+  tick();
+  clearInterval(timerInt);
+  timerInt = setInterval(tick, 1000);
+}
+
+function copyCode(){
+  var code = getCode();
+  doCopy(code, "✅ Code copy ho gaya: "+code);
+}
+
+function shareWA(){
+  var code = getCode();
+  var msg = "🔑 *TechSumit Course Unlock Code*\n\n*"+code+"*\n\n⏰ Yeh code sirf *1 minute* valid hai!\nAbhi use karo 🚀";
+  window.open("https://api.whatsapp.com/send?phone="+ADMIN_PHONE+"&text="+encodeURIComponent(msg),"_blank");
+}
+
+// ── TABS ──────────────────────────────────
+function showTab(id, btn){
+  document.querySelectorAll(".section").forEach(function(s){ s.classList.remove("active"); });
+  document.querySelectorAll(".tab").forEach(function(t){ t.classList.remove("active"); });
+  document.getElementById("tab-"+id).classList.add("active");
+  btn.classList.add("active");
+  if(id==="purchases") loadPurchases();
+  if(id==="prompts") initPromptsTab();
+}
+
+// ── COURSES ──────────────────────────────
+function getCourses(){ return JSON.parse(localStorage.getItem("ts_courses")||"[]"); }
+function saveCourses(a){ localStorage.setItem("ts_courses",JSON.stringify(a)); }
+
+function loadCourses(){
+  var courses = getCourses();
+  var con = document.getElementById("coursesList");
+  con.innerHTML = "";
+  if(!courses.length){
+    con.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">📚 Koi course nahi hai. Add Course tab se add karo!</div>';
+    return;
+  }
+  courses.forEach(function(c,i){
+    var div = document.createElement("div");
+    div.className = "course-item";
+    var vlink = c.videoLink
+      ? '<div style="font-size:11px;color:var(--blue);margin-top:4px;">🔗 Video linked ✅</div>'
+      : '<div style="font-size:11px;color:var(--red);margin-top:4px;">⚠️ Video link nahi hai</div>';
+    div.innerHTML =
+      '<div class="c-emoji">'+(c.emoji||"📚")+'</div>'+
+      '<div class="c-info">'+
+        '<div class="c-title">'+c.title+'</div>'+
+        '<div class="c-meta">₹'+c.price+' · '+c.category+' · <span class="'+(c.live?"tag-live":"tag-soon")+'">'+(c.live?"✅ LIVE":"⏳ Soon")+'</span></div>'+
+        vlink+
+      '</div>'+
+      '<div class="c-actions">'+
+        '<button class="btn btn-orange btn-sm" onclick="openEdit('+i+')">✏️</button>'+
+        '<button class="btn btn-red btn-sm" onclick="deleteCourse('+i+')">🗑️</button>'+
+      '</div>';
+    con.appendChild(div);
+  });
+  updateStats();
+  populatePurSelect();
+}
+
+function addCourse(){
+  var title=document.getElementById("nc_title").value.trim();
+  var desc=document.getElementById("nc_desc").value.trim();
+  var cat=document.getElementById("nc_cat").value.trim();
+  var price=parseInt(document.getElementById("nc_price").value)||0;
+  if(!title||!desc||!cat||!price){ showToast("❌ Title, description, category aur price zaroori hain!"); return; }
+  var courses=getCourses();
+  courses.push({
+    id:"c"+Date.now(), title, desc, category:cat,
+    emoji:document.getElementById("nc_emoji").value||"📚",
+    price,
+    originalPrice:parseInt(document.getElementById("nc_orig").value)||0,
+    videoLink:document.getElementById("nc_video").value.trim(),
+    videoPass:document.getElementById("nc_pass").value.trim(),
+    thumb:document.getElementById("nc_thumb").value.trim(),
+    rating:parseFloat(document.getElementById("nc_rating").value)||4.9,
+    reviews:parseInt(document.getElementById("nc_reviews").value)||1000,
+    buyers:document.getElementById("nc_buyers").value.trim()||"500+",
+    isHot:document.getElementById("nc_hot").checked,
+    isNew:document.getElementById("nc_new").checked,
+    live:document.getElementById("nc_live").checked
+  });
+  saveCourses(courses);
+  loadCourses();
+  clearForm();
+  showToast("✅ Course add ho gaya!");
+}
+
+function clearForm(){
+  ["nc_title","nc_desc","nc_cat","nc_emoji","nc_price","nc_orig","nc_video","nc_pass","nc_thumb","nc_rating","nc_reviews","nc_buyers"].forEach(function(id){ document.getElementById(id).value=""; });
+  document.getElementById("nc_hot").checked=false;
+  document.getElementById("nc_new").checked=false;
+  document.getElementById("nc_live").checked=true;
+}
+
+function deleteCourse(i){
+  if(!confirm("Course delete karna chahte ho?")) return;
+  var courses=getCourses(); courses.splice(i,1); saveCourses(courses); loadCourses();
+  showToast("🗑️ Course delete ho gaya!");
+}
+
+function openEdit(i){
+  var c=getCourses()[i];
+  document.getElementById("edit_idx").value=i;
+  document.getElementById("edit_title").value=c.title||"";
+  document.getElementById("edit_desc").value=c.desc||"";
+  document.getElementById("edit_cat").value=c.category||"";
+  document.getElementById("edit_emoji").value=c.emoji||"";
+  document.getElementById("edit_price").value=c.price||"";
+  document.getElementById("edit_orig").value=c.originalPrice||"";
+  document.getElementById("edit_video").value=c.videoLink||"";
+  document.getElementById("edit_pass").value=c.videoPass||"";
+  document.getElementById("edit_thumb").value=c.thumb||"";
+  document.getElementById("edit_rating").value=c.rating||"";
+  document.getElementById("edit_reviews").value=c.reviews||"";
+  document.getElementById("edit_buyers").value=c.buyers||"";
+  document.getElementById("edit_hot").checked=!!c.isHot;
+  document.getElementById("edit_new").checked=!!c.isNew;
+  document.getElementById("edit_live").checked=!!c.live;
+  document.getElementById("editModal").style.display="block";
+}
+
+function saveEdit(){
+  var i=parseInt(document.getElementById("edit_idx").value);
+  var courses=getCourses(); var c=courses[i];
+  c.title=document.getElementById("edit_title").value.trim();
+  c.desc=document.getElementById("edit_desc").value.trim();
+  c.category=document.getElementById("edit_cat").value.trim();
+  c.emoji=document.getElementById("edit_emoji").value||"📚";
+  c.price=parseInt(document.getElementById("edit_price").value)||c.price;
+  c.originalPrice=parseInt(document.getElementById("edit_orig").value)||0;
+  c.videoLink=document.getElementById("edit_video").value.trim();
+  c.videoPass=document.getElementById("edit_pass").value.trim();
+  c.thumb=document.getElementById("edit_thumb").value.trim();
+  c.rating=parseFloat(document.getElementById("edit_rating").value)||c.rating;
+  c.reviews=parseInt(document.getElementById("edit_reviews").value)||c.reviews;
+  c.buyers=document.getElementById("edit_buyers").value.trim()||c.buyers;
+  c.isHot=document.getElementById("edit_hot").checked;
+  c.isNew=document.getElementById("edit_new").checked;
+  c.live=document.getElementById("edit_live").checked;
+  courses[i]=c; saveCourses(courses); loadCourses(); closeModal();
+  showToast("✅ Course update ho gaya!");
+}
+
+function closeModal(){ document.getElementById("editModal").style.display="none"; }
+document.getElementById("editModal").addEventListener("click",function(e){ if(e.target===this) closeModal(); });
+
+// ── PURCHASES ────────────────────────────
+function getPurchases(){ return JSON.parse(localStorage.getItem("ts_purchases")||"[]"); }
+function savePurchases(a){ localStorage.setItem("ts_purchases",JSON.stringify(a)); }
+
+function loadPurchases(){
+  var list=getPurchases();
+  var con=document.getElementById("purchasesList");
+  if(!list.length){ con.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">💰 Koi purchase nahi abhi.</div>'; return; }
+  con.innerHTML="";
+  list.slice().reverse().forEach(function(p){
+    var div=document.createElement("div"); div.className="pur-item";
+    div.innerHTML='<div class="pur-top"><div class="pur-name">👤 '+p.name+(p.phone?" · "+p.phone:"")+'</div><div class="pur-time">'+p.time+'</div></div><div class="pur-course">📚 '+p.course+' · ₹'+p.price+'</div>';
+    con.appendChild(div);
+  });
+  updateStats();
+}
+
+function populatePurSelect(){
+  var sel=document.getElementById("pur_course");
+  var courses=getCourses().filter(function(c){ return c.live; });
+  sel.innerHTML='<option value="">— Course select karo —</option>';
+  courses.forEach(function(c){ sel.innerHTML+='<option value="'+c.title+"|"+c.price+'">'+(c.emoji||"")+" "+c.title+' (₹'+c.price+')</option>'; });
+}
+
+function addPurchase(){
+  var name=document.getElementById("pur_name").value.trim();
+  var phone=document.getElementById("pur_phone").value.trim();
+  var cv=document.getElementById("pur_course").value;
+  var manualCourse=document.getElementById("pur_course_manual").value.trim();
+  var courseName="", coursePrice="";
+  if(cv){
+    var parts=cv.split("|"); courseName=parts[0]; coursePrice=parts[1];
+  } else if(manualCourse){
+    courseName=manualCourse; coursePrice="—";
+  }
+  if(!name||!courseName){ showToast("❌ Naam aur course (dropdown ya manual) zaroori hai!"); return; }
+  var list=getPurchases();
+  list.push({ name:name, phone:phone, course:courseName, price:coursePrice, time:new Date().toLocaleString("en-IN") });
+  savePurchases(list);
+  document.getElementById("pur_name").value="";
+  document.getElementById("pur_phone").value="";
+  document.getElementById("pur_course").value="";
+  document.getElementById("pur_course_manual").value="";
+  loadPurchases();
+  showToast("✅ Purchase record ho gaya!");
+}
+
+// ── EXPORT WEBSITE ───────────────────────
+function exportWebsite(){
+  var courses = getCourses();
+  if(!courses.length){ showToast("❌ Pehle koi course add karo!"); return; }
+
+  var coursesJson = JSON.stringify(courses);
+
+  // Build the updated website by embedding courses data
+  // We store the courses in a special script tag format
+  var seedScript = '<sc' + 'ript id="seed-data">var __SEED_COURSES=' + coursesJson + ';</sc' + 'ript>';
+
+  // Download a loader HTML that sets localStorage then redirects
+  var loaderHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Loading...</title></head><body>' +
+    '<script>localStorage.setItem("ts_courses",JSON.stringify(' + coursesJson + '));' +
+    'window.location.href="TechSumit_Website.html";<\/script>' +
+    '<p>Loading TechSumit...</p></body></html>';
+
+  downloadFile(loaderHtml, "index.html");
+  showToast("✅ index.html download ho gayi! Netlify pe teeno files ke saath upload karo.");
+}
+
+function downloadFile(content, filename){
+  var blob = new Blob([content], {type: "text/html"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ── STATS ────────────────────────────────
+function updateStats(){
+  var courses=getCourses();
+  document.getElementById("statCourses").textContent=courses.length;
+  document.getElementById("statLive").textContent=courses.filter(function(c){ return c.live; }).length;
+  document.getElementById("statPur").textContent=getPurchases().length;
+}
+
+// ── PROMPTS ──────────────────────────────
+function getPromptSets(){ return JSON.parse(localStorage.getItem("ts_prompts")||"[]"); }
+function savePromptSets(a){ localStorage.setItem("ts_prompts",JSON.stringify(a)); }
+
+function initPromptsTab(){
+  // Fill course dropdown
+  var sel=document.getElementById("ps_course");
+  sel.innerHTML='<option value="">— Course select karo —</option>';
+  getCourses().forEach(function(c){
+    sel.innerHTML+='<option value="'+c.id+'">'+(c.emoji||"")+" "+c.title+'</option>';
+  });
+  // Reset fields
+  promptCount=0;
+  document.getElementById("promptFieldsArea").innerHTML="";
+  addPromptField();
+  loadPromptSets();
+}
+
+function addPromptField(){
+  promptCount++;
+  var area=document.getElementById("promptFieldsArea");
+  var div=document.createElement("div");
+  div.className="prompt-field";
+  div.id="pf_"+promptCount;
+  var ta=document.createElement("textarea");
+  ta.id="ptext_"+promptCount;
+  ta.placeholder="Prompt #"+promptCount+" yahan likho...\n\nJaise: Act as a finance expert. Create a complete YouTube video script about [TOPIC]. Include hook, main content and CTA. Language: Hinglish.";
+  var inp=document.createElement("input");
+  inp.type="text";
+  inp.id="ptitle_"+promptCount;
+  inp.placeholder="Prompt ka naam — Jaise: Script Generator";
+  var num=document.createElement("div");
+  num.className="prompt-field-num";
+  num.textContent="PROMPT #"+promptCount;
+  div.appendChild(num);
+  div.appendChild(inp);
+  div.appendChild(ta);
+  area.appendChild(div);
+  ta.focus();
+}
+
+function removePromptField(){
+  if(promptCount<=1){ showToast("❌ Kam se kam 1 prompt chahiye!"); return; }
+  var last=document.getElementById("pf_"+promptCount);
+  if(last) last.parentNode.removeChild(last);
+  promptCount--;
+}
+
+function savePromptSet(){
+  var name=document.getElementById("ps_name").value.trim();
+  var courseId=document.getElementById("ps_course").value;
+  var desc=document.getElementById("ps_desc").value.trim();
+  var manualCourse=document.getElementById("ps_course_manual").value.trim();
+  if(!name){ showToast("❌ Prompt set ka naam daalo!"); return; }
+  if(!courseId && !manualCourse){ showToast("❌ Course dropdown se select karo ya manually likho!"); return; }
+
+  var prompts=[];
+  for(var i=1;i<=promptCount;i++){
+    var ti=document.getElementById("ptitle_"+i);
+    var tx=document.getElementById("ptext_"+i);
+    if(!ti||!tx) continue;
+    var txt=tx.value.trim();
+    if(txt) prompts.push({ title:ti.value.trim()||("Prompt #"+i), text:txt });
+  }
+  if(!prompts.length){ showToast("❌ Kam se kam 1 prompt ka text likho!"); return; }
+
+  var courses=getCourses();
+  var course=courses.find(function(c){ return c.id===courseId; });
+  var resolvedCourseName = course ? course.title : (manualCourse || courseId);
+  var sets=getPromptSets();
+  sets.push({
+    id:"ps_"+Date.now(),
+    name:name,
+    courseId:courseId||"manual",
+    courseName:resolvedCourseName,
+    desc:desc,
+    prompts:prompts,
+    createdAt:new Date().toLocaleDateString("en-IN")
+  });
+  savePromptSets(sets);
+
+  // Reset
+  document.getElementById("ps_name").value="";
+  document.getElementById("ps_desc").value="";
+  document.getElementById("ps_course").value="";
+  document.getElementById("ps_course_manual").value="";
+  promptCount=0;
+  document.getElementById("promptFieldsArea").innerHTML="";
+  addPromptField();
+  loadPromptSets();
+  showToast("✅ "+prompts.length+" prompts save ho gaye!");
+}
+
+function loadPromptSets(){
+  var sets=getPromptSets();
+  var con=document.getElementById("promptSetsList");
+  con.innerHTML="";
+  if(!sets.length){
+    con.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">🧠 Koi prompt set nahi hai abhi.<br>Upar form se banao!</div>';
+    return;
+  }
+  sets.slice().reverse().forEach(function(ps,ri){
+    var realIdx=sets.length-1-ri;
+    var card=document.createElement("div");
+    card.className="ps-card";
+    var promptsHtml="";
+    ps.prompts.forEach(function(p,pi){
+      var elemId="spt_"+ps.id+"_"+pi;
+      promptsHtml+=
+        '<div class="single-prompt">'+
+          '<div class="sp-num">PROMPT #'+(pi+1)+'</div>'+
+          '<div class="sp-title">'+escHtml(p.title)+'</div>'+
+          '<div class="sp-text" id="'+elemId+'">'+escHtml(p.text)+'</div>'+
+          '<button class="sp-copy-btn" onclick="copyById(\''+elemId+'\')">📋 Copy Karo</button>'+
+        '</div>';
+    });
+    card.innerHTML=
+      '<div class="ps-head">'+
+        '<div>'+
+          '<div class="ps-name">🧠 '+escHtml(ps.name)+'</div>'+
+          '<div class="ps-meta">📚 '+escHtml(ps.courseName)+' · '+ps.createdAt+(ps.desc?' · '+escHtml(ps.desc):'')+'</div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;gap:6px;">'+
+          '<span class="ps-count">'+ps.prompts.length+' prompts</span>'+
+          '<button class="btn btn-red btn-sm" onclick="deletePromptSet('+realIdx+')">🗑️</button>'+
+        '</div>'+
+      '</div>'+
+      '<div>'+promptsHtml+'</div>';
+    con.appendChild(card);
+  });
+}
+
+function deletePromptSet(i){
+  if(!confirm("Yeh prompt set delete karna chahte ho?")) return;
+  var sets=getPromptSets(); sets.splice(i,1); savePromptSets(sets); loadPromptSets();
+  showToast("🗑️ Prompt set delete ho gaya!");
+}
+
+function escHtml(str){
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function copyById(elemId){
+  var el=document.getElementById(elemId);
+  if(!el){ showToast("Error!"); return; }
+  var text=el.innerText||el.textContent;
+  doCopy(text,"✅ Prompt copy ho gaya!");
+}
+
+// ── COPY HELPER ──────────────────────────
+function doCopy(text, msg){
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){ showToast(msg); }).catch(function(){ fallbackCopy(text,msg); });
+  } else { fallbackCopy(text,msg); }
+}
+function fallbackCopy(text,msg){
+  var ta=document.createElement("textarea");
+  ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand("copy"); showToast(msg); } catch(e){ showToast("Manually copy karo!"); }
+  document.body.removeChild(ta);
+}
+
+// ── MANUAL COURSE HELPERS ────────────────
+function purCourseChanged(){
+  // Jab dropdown se select karo toh manual clear ho
+  var sel = document.getElementById("pur_course").value;
+  if(sel) document.getElementById("pur_course_manual").value = "";
+}
+function psCourseChanged(){
+  var sel = document.getElementById("ps_course").value;
+  if(sel) document.getElementById("ps_course_manual").value = "";
+}
+
+// ── TOAST ────────────────────────────────
+var toastTimer;
+function showToast(msg){
+  var t=document.getElementById("toast");
+  t.textContent=msg; t.style.display="block";
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){ t.style.display="none"; },3000);
+}
+</script>
+</body>
+</html>
