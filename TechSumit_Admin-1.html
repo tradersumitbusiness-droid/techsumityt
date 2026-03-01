@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechSumit Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--accent:#f97316;--green:#16a34a;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--soft:#f1f5f9;--card:#fff;--dark:#0f172a;}
+body{background:#0f172a;font-family:-apple-system,'Segoe UI',Arial,sans-serif;color:#f1f5f9;min-height:100vh;}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-box{background:#1e293b;border:1px solid #334155;border-radius:20px;padding:32px 24px;width:100%;max-width:380px;}
+.login-logo{text-align:center;margin-bottom:24px;}
+.login-icon{width:56px;height:56px;background:var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;}
+.login-title{font-size:22px;font-weight:900;}
+.login-sub{color:#94a3b8;font-size:13px;margin-top:4px;}
+.inp{width:100%;background:#0f172a;border:1.5px solid #334155;border-radius:12px;padding:13px 16px;font-size:15px;color:#f1f5f9;outline:none;font-family:inherit;margin-bottom:12px;}
+.inp:focus{border-color:var(--accent);}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#fb923c);border:none;border-radius:12px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;}
+.login-err{display:none;color:#f87171;font-size:13px;text-align:center;margin-top:10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px;}
+
+/* DASHBOARD */
+#dashboard{display:none;}
+.top-bar{background:#1e293b;border-bottom:1px solid #334155;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.top-logo{display:flex;align-items:center;gap:10px;}
+.top-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.top-name{font-size:18px;font-weight:900;}
+.top-badge{background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);border-radius:99px;padding:4px 12px;font-size:11px;color:var(--accent);font-weight:700;}
+.logout-btn{background:none;border:1px solid #334155;color:#94a3b8;border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit;}
+.content{padding:16px;max-width:900px;margin:0 auto;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+.stat-card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:16px;}
+.stat-val{font-size:22px;font-weight:900;color:var(--accent);margin-bottom:2px;}
+.stat-lbl{font-size:11px;color:#94a3b8;}
+
+/* SETTINGS */
+.section{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:18px;margin-bottom:16px;}
+.sec-title{font-size:16px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.field{margin-bottom:12px;}
+.field label{font-size:12px;color:#94a3b8;display:block;margin-bottom:5px;font-weight:600;}
+.field input,.field select,.field textarea{width:100%;background:#0f172a;border:1.5px solid #334155;border-radius:10px;padding:11px 14px;font-size:14px;color:#f1f5f9;outline:none;font-family:inherit;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+.field textarea{resize:vertical;min-height:70px;}
+.field select option{background:#1e293b;color:#f1f5f9;}
+
+/* CODE */
+.code-box{background:#0f172a;border:1px solid #334155;border-radius:14px;padding:18px;text-align:center;margin-bottom:16px;}
+.code-val{font-size:42px;font-weight:900;color:var(--accent);letter-spacing:10px;margin:10px 0;}
+.code-timer{font-size:13px;color:#94a3b8;margin-bottom:10px;}
+.code-copy{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+/* COURSE LIST */
+.course-item{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+.ci-em{font-size:28px;flex-shrink:0;}
+.ci-info{flex:1;min-width:0;}
+.ci-title{font-size:14px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ci-meta{font-size:11px;color:#94a3b8;}
+.ci-live{font-size:10px;font-weight:700;border-radius:99px;padding:2px 8px;}
+.ci-live.yes{background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.3);}
+.ci-live.no{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid #334155;}
+.ci-btns{display:flex;gap:6px;flex-shrink:0;}
+.edit-btn{background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);color:var(--accent);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;}
+.del-btn{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#f87171;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:inherit;}
+
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--accent),#fb923c);color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;}
+.btn-green{background:linear-gradient(135deg,var(--green),#15803d);color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;width:100%;}
+.btn-outline{background:none;border:1.5px solid #334155;color:#94a3b8;border-radius:12px;padding:11px;font-size:13px;cursor:pointer;font-family:inherit;width:100%;}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:none;overflow-y:auto;padding:20px;}
+.modal.show{display:block;}
+.modal-box{max-width:440px;margin:0 auto;background:#1e293b;border:1px solid #334155;border-radius:20px;padding:22px 18px;}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:16px;}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:#0f172a;border:1px solid #334155;border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.toggle-lbl{font-size:13px;font-weight:600;}
+.toggle{width:44px;height:24px;border-radius:99px;border:none;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0;}
+.toggle.on{background:var(--green);}
+.toggle.off{background:#475569;}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;transition:left .3s;}
+.toggle.on::after{left:23px;}
+.toggle.off::after{left:3px;}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#f1f5f9;color:#0f172a;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:700;display:none;z-index:9999;white-space:nowrap;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-icon">&#9889;</div>
+      <div class="login-title">TECHSUMIT ADMIN</div>
+      <div class="login-sub">Sirf Sumit Bhai ke liye</div>
+    </div>
+    <input class="inp" type="password" id="passInp" placeholder="Password daalo..." onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Login Karo &#8594;</button>
+    <div class="login-err" id="loginErr">Galat password! Try again.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="top-bar">
+    <div class="top-logo">
+      <div class="top-icon">&#9889;</div>
+      <div class="top-name">TECHSUMIT</div>
+      <div class="top-badge">&#128737; ADMIN</div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Logout</button>
+  </div>
+
+  <div id="rulesAlert" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:14px;margin:14px 16px 0;font-size:13px;color:#fca5a5;line-height:1.7;">
+  <b>Firebase Rules Fix karo:</b><br>
+  1. <a href="https://console.firebase.google.com/project/techsumit-ff14d/database/techsumit-ff14d-default-rtdb/rules" target="_blank" style="color:#f97316;">Yahan tap karo</a><br>
+  2. Rules mein yeh paste karo:<br>
+  <code style="background:#0f172a;border-radius:6px;padding:6px 10px;display:block;margin:6px 0;color:#4ade80;">{"rules":{".read":true,".write":true}}</code>
+  3. <b>Publish</b> button dabao ✅
+</div>
+<div class="content">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-val" id="adCourses">-</div><div class="stat-lbl">Total Courses</div></div>
+      <div class="stat-card"><div class="stat-val" id="adLive">-</div><div class="stat-lbl">Live Courses</div></div>
+    </div>
+
+    <!-- CURRENT CODE -->
+    <div class="code-box">
+      <div style="font-size:13px;color:#94a3b8;margin-bottom:4px;">Abhi ka Valid Code</div>
+      <div class="code-val" id="codeVal">-----</div>
+      <div class="code-timer" id="codeTmr">Loading...</div>
+      <button class="code-copy" onclick="copyCode()">Code Copy Karo</button>
+      <div style="font-size:11px;color:#64748b;margin-top:10px;">Student ko WhatsApp pe yeh code bhejo &#128273;</div>
+    </div>
+
+    <!-- SITE SETTINGS -->
+    <div class="section">
+      <div class="sec-title">&#9881;&#65039; Site Settings</div>
+      <div class="field"><label>Students Count (jaise: 5,100+)</label><input type="text" id="setStudents" placeholder="5,100+"></div>
+      <div class="field"><label>Courses Count (jaise: 50+)</label><input type="text" id="setCourses" placeholder="50+"></div>
+      <button class="btn-green" onclick="saveSettings()" style="margin-top:4px;">&#128190; Settings Save Karo</button>
+    </div>
+
+    <!-- COURSES -->
+    <div class="section">
+      <div class="sec-title">&#128218; Courses Manage Karo</div>
+      <div id="courseList"><div style="text-align:center;padding:20px;color:#94a3b8;">Courses load ho rahe hain...</div></div>
+      <button class="btn-primary" style="margin-top:14px;" onclick="openAdd()">+ Naya Course Add Karo</button>
+    </div>
+
+    <!-- HOW TO USE CODE -->
+    <div class="section">
+      <div class="sec-title">&#8505;&#65039; Code Kaise Use Karein</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="background:#0f172a;border-radius:10px;padding:10px 12px;font-size:13px;color:#94a3b8;"><span style="color:var(--accent);font-weight:700;">1.</span> Student WhatsApp pe payment screenshot bhejega</div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px 12px;font-size:13px;color:#94a3b8;"><span style="color:var(--accent);font-weight:700;">2.</span> Aap payment verify karo</div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px 12px;font-size:13px;color:#94a3b8;"><span style="color:var(--accent);font-weight:700;">3.</span> Upar wala code copy karo aur WhatsApp pe bhejo</div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px 12px;font-size:13px;color:#94a3b8;"><span style="color:var(--accent);font-weight:700;">4.</span> Code sirf <span style="color:#f59e0b;font-weight:700;">1 minute</span> valid hai — jaldi bhejo!</div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px 12px;font-size:13px;color:#94a3b8;"><span style="color:var(--accent);font-weight:700;">5.</span> Student code dalega aur video link milega &#10003;</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal" id="courseModal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">Naya Course Add Karo</div>
+    <input type="hidden" id="editId">
+    <div class="field"><label>Emoji</label><input type="text" id="fEmoji" placeholder="🎬" maxlength="4"></div>
+    <div class="field"><label>Course Title *</label><input type="text" id="fTitle" placeholder="Course ka naam..."></div>
+    <div class="field"><label>Category *</label>
+      <select id="fCat">
+        <option value="Editing">Editing</option>
+        <option value="AI">AI</option>
+        <option value="Automation">Automation</option>
+        <option value="Finance">Finance</option>
+        <option value="YouTube">YouTube</option>
+        <option value="Freelancing">Freelancing</option>
+      </select>
+    </div>
+    <div class="field"><label>Description</label><textarea id="fDesc" placeholder="Course ke baare mein likho..."></textarea></div>
+    <div class="field"><label>Price (Rs.) *</label><input type="number" id="fPrice" placeholder="99"></div>
+    <div class="field"><label>Original Price (Rs.)</label><input type="number" id="fOrig" placeholder="999"></div>
+    <div class="field"><label>Video Link (Vimeo/YouTube)</label><input type="text" id="fVideo" placeholder="https://..."></div>
+    <div class="field"><label>Rating (1-5)</label><input type="number" id="fRating" placeholder="4.9" min="1" max="5" step="0.1"></div>
+    <div class="field"><label>Reviews Count</label><input type="number" id="fReviews" placeholder="100"></div>
+    <div class="field"><label>Buyers (jaise: 1.2k)</label><input type="text" id="fBuyers" placeholder="1.2k"></div>
+    <div class="toggle-row">
+      <span class="toggle-lbl">HOT Badge</span>
+      <button class="toggle off" id="tHot" onclick="toggleBtn('tHot')"></button>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-lbl">NEW Badge</span>
+      <button class="toggle off" id="tNew" onclick="toggleBtn('tNew')"></button>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-lbl">Live (students dekh sakte hain)</span>
+      <button class="toggle on" id="tLive" onclick="toggleBtn('tLive')"></button>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-outline" onclick="closeModal()" style="flex:1;">Raho jaane do</button>
+      <button class="btn-primary" onclick="saveCourse()" style="flex:2;">&#128190; Save Karo</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var DB  = "https://techsumit-ff14d-default-rtdb.firebaseio.com";
+var SEC = "TechSumitAdmin@999";
+var ADM = "TechSumitAdmin@999";
+
+function doLogin() {
+  var p = document.getElementById("passInp").value;
+  if (p === ADM) {
+    document.getElementById("loginWrap").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    initAdmin();
+  } else {
+    document.getElementById("loginErr").style.display = "block";
+  }
+}
+
+function doLogout() {
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("loginWrap").style.display = "flex";
+  document.getElementById("passInp").value = "";
+}
+
+function initAdmin() {
+  loadAdminCourses();
+  loadSettings();
+  updateCode();
+  setInterval(updateCode, 5000);
+}
+
+// CODE
+function hashStr(s) { var h=0; for(var i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0;} return Math.abs(h); }
+var CH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function makeCode(slot) { var sd=SEC+"|UNLOCK|"+slot; var h=hashStr(sd); var c=""; for(var i=0;i<5;i++){c+=CH[h%CH.length];h=Math.floor(h/CH.length);if(h<CH.length)h=hashStr(sd+i);} return c; }
+
+function updateCode() {
+  var now = Date.now();
+  var slot = Math.floor(now / 60000);
+  var secsLeft = 60 - Math.floor((now % 60000) / 1000);
+  document.getElementById("codeVal").textContent = makeCode(slot);
+  document.getElementById("codeTmr").textContent = secsLeft + " second mein badlega";
+}
+
+function copyCode() {
+  var code = document.getElementById("codeVal").textContent;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function() { showToast("Code copy ho gaya: " + code); }).catch(function(){ fallbackCopy(code); });
+    } else { fallbackCopy(code); }
+  } catch(e) { fallbackCopy(code); }
+}
+function fallbackCopy(code) {
+  var t = document.createElement("textarea");
+  t.value = code; t.style.position = "fixed"; t.style.opacity = "0";
+  document.body.appendChild(t); t.focus(); t.select();
+  try { document.execCommand("copy"); showToast("Code copy ho gaya: " + code); }
+  catch(e) { showToast("Code hai: " + code); }
+  document.body.removeChild(t);
+}
+
+// SETTINGS
+function loadSettings() {
+  fetch(DB + "/settings.json")
+    .then(function(r){return r.json();})
+    .then(function(s){
+      if(s){
+        if(s.students) document.getElementById("setStudents").value = s.students;
+        if(s.courses) document.getElementById("setCourses").value = s.courses;
+      }
+    }).catch(function(){});
+}
+
+function saveSettings() {
+  var data = {
+    students: document.getElementById("setStudents").value || "5,100+",
+    courses: document.getElementById("setCourses").value || "50+"
+  };
+  showToast("Save ho raha hai...");
+  fetch(DB + "/settings.json?auth=", { method:"PUT", body:JSON.stringify(data), headers:{"Content-Type":"application/json"} })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(res && res.error) { showToast("Firebase rules fix karo! Neeche dekho."); showRulesAlert(); }
+      else { showToast("Settings save ho gayi!"); }
+    })
+    .catch(function(e){ showToast("Error: " + e.message); });
+}
+
+// COURSES
+var ADMIN_CS = {};
+
+function loadAdminCourses() {
+  fetch(DB + "/courses.json")
+    .then(function(r){return r.json();})
+    .then(function(data){
+      ADMIN_CS = data || {};
+      renderAdminCourses();
+    }).catch(function(){ showToast("Error loading courses!"); });
+}
+
+function renderAdminCourses() {
+  var list = document.getElementById("courseList");
+  var keys = Object.keys(ADMIN_CS);
+  if (!keys.length) {
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;">Koi course nahi hai. Naya add karo!</div>';
+    document.getElementById("adCourses").textContent = "0";
+    document.getElementById("adLive").textContent = "0";
+    return;
+  }
+  var live = 0;
+  list.innerHTML = "";
+  keys.forEach(function(k) {
+    var c = ADMIN_CS[k];
+    if (c.live) live++;
+    var d = document.createElement("div");
+    d.className = "course-item";
+    d.innerHTML =
+      '<div class="ci-em">' + (c.emoji||"&#128218;") + '</div>' +
+      '<div class="ci-info"><div class="ci-title">' + c.title + '</div><div class="ci-meta">Rs.' + c.price + ' &middot; ' + (c.category||"") + '</div></div>' +
+      '<div class="ci-live ' + (c.live?"yes":"no") + '">' + (c.live?"LIVE":"SOON") + '</div>' +
+      '<div class="ci-btns">' +
+        '<button class="edit-btn" onclick="openEdit(\'' + k + '\')">Edit</button>' +
+        '<button class="del-btn" onclick="delCourse(\'' + k + '\')">Del</button>' +
+      '</div>';
+    list.appendChild(d);
+  });
+  document.getElementById("adCourses").textContent = keys.length;
+  document.getElementById("adLive").textContent = live;
+}
+
+function openAdd() {
+  document.getElementById("modalTitle").textContent = "Naya Course Add Karo";
+  document.getElementById("editId").value = "";
+  document.getElementById("fEmoji").value = "";
+  document.getElementById("fTitle").value = "";
+  document.getElementById("fDesc").value = "";
+  document.getElementById("fPrice").value = "";
+  document.getElementById("fOrig").value = "";
+  document.getElementById("fVideo").value = "";
+  document.getElementById("fRating").value = "4.9";
+  document.getElementById("fReviews").value = "100";
+  document.getElementById("fBuyers").value = "";
+  document.getElementById("tHot").className = "toggle off";
+  document.getElementById("tNew").className = "toggle off";
+  document.getElementById("tLive").className = "toggle on";
+  document.getElementById("courseModal").className = "modal show";
+}
+
+function openEdit(k) {
+  var c = ADMIN_CS[k];
+  document.getElementById("modalTitle").textContent = "Course Edit Karo";
+  document.getElementById("editId").value = k;
+  document.getElementById("fEmoji").value = c.emoji || "";
+  document.getElementById("fTitle").value = c.title || "";
+  document.getElementById("fDesc").value = c.desc || "";
+  document.getElementById("fPrice").value = c.price || "";
+  document.getElementById("fOrig").value = c.originalPrice || "";
+  document.getElementById("fVideo").value = c.videoLink || "";
+  document.getElementById("fRating").value = c.rating || "4.9";
+  document.getElementById("fReviews").value = c.reviews || "";
+  document.getElementById("fBuyers").value = c.buyers || "";
+  document.getElementById("fCat").value = c.category || "Editing";
+  document.getElementById("tHot").className = "toggle " + (c.isHot ? "on" : "off");
+  document.getElementById("tNew").className = "toggle " + (c.isNew ? "on" : "off");
+  document.getElementById("tLive").className = "toggle " + (c.live ? "on" : "off");
+  document.getElementById("courseModal").className = "modal show";
+}
+
+function closeModal() { document.getElementById("courseModal").className = "modal"; }
+
+function toggleBtn(id) {
+  var b = document.getElementById(id);
+  b.className = "toggle " + (b.className.indexOf("on") !== -1 ? "off" : "on");
+}
+
+function saveCourse() {
+  var title = document.getElementById("fTitle").value.trim();
+  var price = document.getElementById("fPrice").value.trim();
+  if (!title || !price) { showToast("Title aur Price zaroori hai!"); return; }
+  var id = document.getElementById("editId").value;
+  var course = {
+    emoji: document.getElementById("fEmoji").value.trim() || "&#128218;",
+    title: title,
+    category: document.getElementById("fCat").value,
+    desc: document.getElementById("fDesc").value.trim(),
+    price: parseInt(price),
+    originalPrice: parseInt(document.getElementById("fOrig").value) || parseInt(price) * 10,
+    videoLink: document.getElementById("fVideo").value.trim(),
+    rating: parseFloat(document.getElementById("fRating").value) || 4.9,
+    reviews: parseInt(document.getElementById("fReviews").value) || 100,
+    buyers: document.getElementById("fBuyers").value.trim() || "100+",
+    isHot: document.getElementById("tHot").className.indexOf("on") !== -1,
+    isNew: document.getElementById("tNew").className.indexOf("on") !== -1,
+    live: document.getElementById("tLive").className.indexOf("on") !== -1
+  };
+  var url = id ? DB + "/courses/" + id + ".json" : DB + "/courses.json";
+  var method = id ? "PATCH" : "POST";
+  var body = id ? JSON.stringify(course) : JSON.stringify({[Date.now()]: course});
+  fetch(url, { method:method, body:body, headers:{"Content-Type":"application/json"} })
+    .then(function(){ showToast("Course save ho gaya!"); closeModal(); loadAdminCourses(); })
+    .catch(function(){ showToast("Error! Check internet."); });
+}
+
+function delCourse(k) {
+  if (!confirm("Pakka delete karna hai?")) return;
+  fetch(DB + "/courses/" + k + ".json", { method:"DELETE" })
+    .then(function(){ showToast("Course delete ho gaya!"); delete ADMIN_CS[k]; renderAdminCourses(); })
+    .catch(function(){ showToast("Error! Check internet."); });
+}
+
+function showRulesAlert() {
+  document.getElementById("rulesAlert").style.display = "block";
+}
+var toastT;
+function showToast(m){var t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(toastT);toastT=setTimeout(function(){t.style.display="none";},3000);}
+</script>
+</body>
+</html>
