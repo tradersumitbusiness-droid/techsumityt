@@ -1,2 +1,0 @@
-# techsumityt
-techsumit
