@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechSumit — Learn. Grow. Earn.</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+/* ── RESET & BASE ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0c0c12;
+  --card:#13131e;
+  --card2:#191926;
+  --card3:#1f1f30;
+  --border:#ffffff0d;
+  --border2:#ffffff18;
+  --border3:#ffffff22;
+  --orange:#f97316;
+  --orange2:#fb923c;
+  --green:#10b981;
+  --blue:#3b82f6;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --text:#e8eaf2;
+  --text2:#8b93b0;
+  --text3:#3d4260;
+  --mono:'SF Mono','Cascadia Code',Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+}
+
+/* ── LIGHT THEME ── */
+body.light-mode{
+  --bg:#f4f5f9;
+  --card:#ffffff;
+  --card2:#f0f1f6;
+  --card3:#e2e4ed;
+  --border:#0000000d;
+  --border2:#00000015;
+  --border3:#00000022;
+  --text:#1a1c2e;
+  --text2:#4a5068;
+  --text3:#9299b0;
+}
+body.light-mode .hd{background:rgba(244,245,249,.95);}
+body.light-mode .tabs-bar{background:rgba(244,245,249,.97);}
+body.light-mode .rv-sec{background:var(--card2);}
+body.light-mode .hero::before{background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(249,115,22,.08),transparent 65%);}
+body.light-mode .toast{background:#fff;color:#1a1c2e;}
+body.light-mode .modal{background:#fff;}
+body.light-mode .pay-box{background:#fff;}
+body.light-mode #payQR{border-color:#e2e4ed;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased;}
+*{scrollbar-width:thin;scrollbar-color:var(--card3) transparent;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:var(--card3);border-radius:99px;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;font-family:var(--sans);}
+img{display:block;}
+
+/* ── HEADER ── */
+.hd{position:sticky;top:0;z-index:300;height:58px;
+  background:rgba(12,12,18,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:space-between;padding:0 20px;gap:12px;
+  overflow:hidden;}
+.hd-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.hd-ico{width:34px;height:34px;background:linear-gradient(135deg,var(--orange),var(--orange2));
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;
+  box-shadow:0 0 14px rgba(249,115,22,.3);}
+.hd-name{font-size:17px;font-weight:800;letter-spacing:-.3px;}
+.hd-r{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.btn-theme{
+  width:36px;height:36px;
+  background:rgba(255,255,255,.06);
+  border:1.5px solid var(--border2);
+  border-radius:9px;font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:.2s;cursor:pointer;
+  padding:0;
+}
+.btn-theme:hover{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.3);transform:rotate(20deg);}
+body.light-mode .btn-theme{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.12);}
+.btn-lang{padding:6px 13px;background:rgba(249,115,22,.08);border:1.5px solid rgba(249,115,22,.2);
+  color:var(--orange);border-radius:8px;font-size:12px;font-weight:700;transition:.15s;}
+.btn-lang:hover{background:rgba(249,115,22,.15);}
+.btn-login{padding:8px 18px;background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;
+  box-shadow:0 2px 12px rgba(249,115,22,.25);transition:.15s;}
+.btn-login:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.hd-user{display:none;align-items:center;gap:8px;}
+.hd-chip{background:var(--card2);border:1px solid var(--border2);border-radius:8px;
+  padding:6px 13px;font-size:12px;font-weight:600;color:var(--text2);}
+.btn-logout{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);
+  color:rgba(239,68,68,.8);border-radius:8px;padding:6px 13px;font-size:12px;font-weight:600;transition:.15s;}
+.btn-logout:hover{background:rgba(239,68,68,.14);color:#fca5a5;}
+
+/* ── HERO ── */
+.hero{padding:52px 20px 44px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(249,115,22,.1),transparent 65%);}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;
+  padding:5px 14px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.4px;
+  background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.18);color:var(--orange);}
+.hero h1{font-size:clamp(28px,6.5vw,50px);font-weight:900;letter-spacing:-1.5px;
+  line-height:1.1;margin-bottom:14px;}
+.hero h1 span{background:linear-gradient(135deg,var(--orange),#fbbf24);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:15px;color:var(--text2);max-width:460px;margin:0 auto 26px;line-height:1.65;}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;}
+.btn-primary{padding:13px 28px;background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:700;
+  box-shadow:0 4px 20px rgba(249,115,22,.35);transition:.2s;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(249,115,22,.4);}
+.btn-secondary{padding:12px 22px;background:rgba(255,255,255,.05);
+  border:1.5px solid var(--border2);color:var(--text2);border-radius:11px;
+  font-size:14px;font-weight:700;transition:.15s;}
+.btn-secondary:hover{background:rgba(255,255,255,.08);color:var(--text);border-color:var(--border3);}
+
+/* ── STATS BAR ── */
+.stats-bar{display:flex;align-items:stretch;max-width:520px;margin:30px auto 0;
+  background:var(--card);border:1px solid var(--border2);border-radius:14px;overflow:hidden;}
+.stat{flex:1;padding:14px 10px;text-align:center;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-n{font-size:18px;font-weight:900;letter-spacing:-.5px;}
+.stat-l{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+/* ── TRUST BADGES ── */
+.badges{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:14px;}
+.badge-trust{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;
+  background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.14);
+  border-radius:99px;font-size:11px;font-weight:600;color:#34d399;}
+
+/* ── SECTION WRAPPER ── */
+.wrap{max-width:980px;margin:0 auto;padding:0 20px;}
+
+/* ── DIVIDER ── */
+.sec-div{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:0;}
+
+/* ── TABS ── */
+.tabs-bar{position:sticky;top:58px;z-index:200;
+  background:rgba(12,12,18,.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border2);}
+.tabs-inner{max-width:980px;margin:0 auto;padding:0 20px;display:flex;}
+.tab{padding:14px 18px;font-size:13px;font-weight:700;color:var(--text3);
+  border-bottom:2px solid transparent;cursor:pointer;transition:.15s;white-space:nowrap;}
+.tab:hover{color:var(--text2);}
+.tab.on{color:var(--orange);border-bottom-color:var(--orange);}
+
+/* ── COURSE SECTION ── */
+.course-sec{padding:28px 0 40px;}
+.search-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.search-box{flex:1;min-width:200px;position:relative;}
+.search-box input{width:100%;padding:11px 16px 11px 40px;background:var(--card);
+  border:1.5px solid var(--border2);border-radius:10px;font-size:13px;
+  font-family:var(--sans);color:var(--text);outline:none;transition:.15s;}
+.search-box input:focus{border-color:rgba(249,115,22,.4);box-shadow:0 0 0 3px rgba(249,115,22,.07);}
+.search-box input::placeholder{color:var(--text3);}
+.search-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  font-size:15px;color:var(--text3);pointer-events:none;}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.filt{padding:5px 13px;background:var(--card);border:1px solid var(--border2);
+  border-radius:99px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:.12s;}
+.filt:hover{color:var(--text);border-color:var(--border3);}
+.filt.on{background:rgba(249,115,22,.09);border-color:rgba(249,115,22,.28);color:var(--orange);}
+
+/* ── COURSE GRID ── */
+.c-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.c-card{background:var(--card);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;transition:.2s;display:flex;flex-direction:column;}
+.c-card:hover{border-color:var(--border2);transform:translateY(-3px);
+  box-shadow:0 16px 40px rgba(0,0,0,.45);}
+.c-thumb{width:100%;padding-bottom:56.25%;background:var(--card2);
+  position:relative;overflow:hidden;}
+.c-thumb .c-em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;}
+.c-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.c-badges{position:absolute;top:9px;left:9px;display:flex;gap:5px;z-index:2;}
+.c-badges{position:absolute;top:9px;left:9px;display:flex;gap:5px;}
+.bdg{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.3px;}
+.bdg-hot{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.18);}
+.bdg-new{background:rgba(16,185,129,.1);color:#34d399;border:1px solid rgba(16,185,129,.18);}
+.bdg-soon{background:rgba(100,116,139,.08);color:var(--text3);border:1px solid rgba(100,116,139,.12);}
+.c-body{padding:14px 14px 16px;display:flex;flex-direction:column;flex:1;}
+.c-cat{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+.c-title{font-size:15px;font-weight:800;line-height:1.3;margin-bottom:5px;letter-spacing:-.2px;}
+.c-desc{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:12px;flex:1;}
+.c-meta{display:flex;align-items:center;gap:7px;margin-bottom:11px;flex-wrap:wrap;}
+.c-stars{font-size:11px;color:#fbbf24;letter-spacing:1px;}
+.c-rc{font-size:11px;color:var(--text3);}
+.c-buyers{font-size:11px;color:var(--text3);}
+.c-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.c-price{display:flex;align-items:baseline;gap:6px;}
+.c-p{font-size:20px;font-weight:900;color:var(--orange);letter-spacing:-.5px;}
+.c-op{font-size:12px;color:var(--text3);text-decoration:line-through;}
+.c-soon-tag{font-size:12px;color:var(--text3);font-weight:600;}
+.btn-buy{padding:9px 18px;background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;border:none;border-radius:9px;font-size:12px;font-weight:700;
+  box-shadow:0 2px 10px rgba(249,115,22,.2);transition:.15s;white-space:nowrap;}
+.btn-buy:hover{filter:brightness(1.08);}
+.btn-soon{padding:8px 14px;background:rgba(255,255,255,.04);
+  border:1px solid var(--border);color:var(--text3);border-radius:9px;font-size:11px;font-weight:600;}
+
+/* ── MY COURSES ── */
+.my-sec{padding:28px 0 40px;}
+.welcome-card{background:linear-gradient(135deg,rgba(249,115,22,.1),rgba(251,146,60,.05));
+  border:1px solid rgba(249,115,22,.18);border-radius:14px;padding:18px 20px;margin-bottom:20px;}
+.welcome-name{font-size:18px;font-weight:800;letter-spacing:-.3px;}
+.welcome-sub{font-size:13px;color:var(--text2);margin-top:4px;}
+
+/* Pre-enrolled */
+.pre-card{background:linear-gradient(135deg,rgba(59,130,246,.06),rgba(16,185,129,.04));
+  border:1px solid rgba(59,130,246,.18);border-radius:14px;padding:18px;position:relative;overflow:hidden;}
+.pre-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--green));}
+.pre-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;
+  background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.22);
+  color:#93c5fd;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:12px;}
+.pre-dot{width:6px;height:6px;border-radius:50%;background:#3b82f6;
+  box-shadow:0 0 6px #3b82f6;animation:pulse 2s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.pre-status{display:flex;align-items:center;gap:8px;padding:10px 12px;
+  background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.12);
+  border-radius:9px;margin:10px 0;font-size:12px;color:#93c5fd;font-weight:600;}
+.pre-conf{font-size:11px;color:var(--text3);margin-top:8px;}
+
+/* Unlocked */
+.my-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.15s;}
+.my-card:hover{border-color:var(--border2);}
+.my-thumb{width:100%;padding-bottom:56.25%;background:var(--card2);position:relative;overflow:hidden;}
+.my-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.my-thumb .my-em{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px;}
+.my-owned{position:absolute;bottom:8px;right:8px;background:rgba(16,185,129,.9);
+  color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;z-index:1;}
+.my-body{padding:14px;}
+.my-cat{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px;}
+.my-title{font-size:15px;font-weight:800;margin-bottom:10px;}
+.btn-watch{display:block;width:100%;padding:11px;
+  background:linear-gradient(135deg,var(--green),#059669);
+  color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;
+  text-align:center;transition:.15s;cursor:pointer;font-family:var(--sans);}
+.btn-watch:hover{filter:brightness(1.08);}
+.btn-prompts{display:block;width:100%;padding:9px;margin-top:7px;
+  background:rgba(139,92,246,.1);border:1.5px solid rgba(139,92,246,.22);
+  color:#c4b5fd;border-radius:9px;font-size:12px;font-weight:700;
+  text-align:center;cursor:pointer;transition:.15s;font-family:var(--sans);}
+.btn-prompts:hover{background:rgba(139,92,246,.2);}
+.btn-materials{display:block;width:100%;padding:9px;margin-top:7px;
+  background:rgba(52,211,153,.08);border:1.5px solid rgba(52,211,153,.2);
+  color:#34d399;border-radius:9px;font-size:12px;font-weight:700;
+  text-align:center;cursor:pointer;transition:.15s;font-family:var(--sans);}
+.btn-materials:hover{background:rgba(52,211,153,.16);}
+
+/* ── MATERIALS MODAL ── */
+.mat-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);
+  z-index:700;display:none;align-items:flex-start;justify-content:center;
+  padding:16px 12px;overflow-y:auto;}
+.mat-ov.show{display:flex;}
+.mat-box{background:var(--card);border:1px solid var(--border2);border-radius:20px;
+  width:100%;max-width:480px;margin:auto;overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.7);}
+.mat-hd{padding:16px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;}
+.mat-hd-info{flex:1;}
+.mat-hd-title{font-size:15px;font-weight:800;}
+.mat-hd-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.mat-close{background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text2);
+  border-radius:8px;width:30px;height:30px;font-size:15px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.mat-body{padding:14px 16px 20px;display:flex;flex-direction:column;gap:10px;
+  max-height:72vh;overflow-y:auto;}
+.mat-item{background:var(--card2);border:1px solid var(--border);border-radius:12px;
+  padding:14px;display:flex;align-items:center;gap:12px;}
+.mat-item-ico{font-size:28px;flex-shrink:0;}
+.mat-item-info{flex:1;min-width:0;}
+.mat-item-name{font-size:13px;font-weight:700;margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mat-item-link{font-size:11px;color:var(--text3);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;}
+.mat-dl-btn{flex-shrink:0;padding:8px 14px;background:rgba(52,211,153,.1);
+  border:1.5px solid rgba(52,211,153,.22);color:#34d399;border-radius:8px;
+  font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;
+  font-family:var(--sans);white-space:nowrap;transition:.15s;}
+.mat-dl-btn:hover{background:rgba(52,211,153,.2);}
+.mat-none{text-align:center;padding:30px 20px;color:var(--text3);font-size:13px;line-height:1.6;}
+
+/* ── PROMPTS MODAL ── */
+.prm-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);
+  z-index:700;display:none;align-items:flex-start;justify-content:center;
+  padding:16px 12px;overflow-y:auto;}
+.prm-ov.show{display:flex;}
+.prm-box{background:var(--card);border:1px solid var(--border2);border-radius:20px;
+  width:100%;max-width:480px;margin:auto;overflow:hidden;box-shadow:0 32px 64px rgba(0,0,0,.7);}
+.prm-hd{padding:16px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;}
+.prm-hd-info{flex:1;}
+.prm-hd-title{font-size:15px;font-weight:800;}
+.prm-hd-sub{font-size:11px;color:var(--text2);margin-top:2px;}
+.prm-close{background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text2);
+  border-radius:8px;width:30px;height:30px;font-size:15px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.prm-body{padding:14px 16px 20px;display:flex;flex-direction:column;gap:10px;max-height:72vh;overflow-y:auto;}
+.prm-item{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:13px;}
+.prm-item-lbl{font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.prm-num{width:20px;height:20px;border-radius:6px;background:rgba(139,92,246,.15);
+  border:1px solid rgba(139,92,246,.25);color:#c4b5fd;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.prm-text{font-size:12px;color:var(--text2);line-height:1.7;
+  font-family:'SF Mono',Consolas,monospace;white-space:pre-wrap;word-break:break-word;
+  max-height:110px;overflow-y:auto;margin-bottom:9px;
+  background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px;}
+.prm-cp{width:100%;padding:8px;background:rgba(139,92,246,.1);border:1.5px solid rgba(139,92,246,.2);
+  color:#c4b5fd;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+  transition:.15s;font-family:var(--sans);}
+.prm-cp:hover{background:rgba(139,92,246,.2);}
+.prm-cp.ok{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25);color:#34d399;}
+.prm-none{text-align:center;padding:30px 20px;color:var(--text3);font-size:13px;line-height:1.6;}
+
+/* ── VIDEO MODAL ── */
+.vid-ov{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:800;
+  display:none;align-items:center;justify-content:center;
+  padding:12px;flex-direction:column;gap:10px;}
+.vid-ov.show{display:flex;}
+.vid-top{width:100%;max-width:720px;display:flex;align-items:center;
+  justify-content:space-between;gap:10px;}
+.vid-title{font-size:14px;font-weight:700;color:#fff;flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vid-close{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);color:#fff;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;}
+.vid-close:hover{background:rgba(239,68,68,.3);}
+.vid-frame-wrap{width:100%;max-width:720px;position:relative;padding-bottom:56.25%;
+  background:#000;border-radius:14px;overflow:hidden;}
+.vid-frame-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+.vid-no-link{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;color:rgba(255,255,255,.4);}
+.vid-no-ico{font-size:48px;opacity:.4;}
+.vid-no-txt{font-size:13px;text-align:center;line-height:1.6;}
+
+/* Empty state */
+.empty{text-align:center;padding:52px 20px;}
+.empty-ico{font-size:48px;margin-bottom:14px;opacity:.4;}
+.empty-title{font-size:15px;font-weight:700;color:var(--text2);margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--text3);}
+.btn-empty{display:inline-block;margin-top:18px;padding:11px 24px;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;}
+
+/* ── REVIEWS SECTION ── */
+.rv-sec{background:var(--card);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);
+  padding:40px 0 44px;}
+.rv-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.rv-title{font-size:20px;font-weight:900;letter-spacing:-.3px;}
+.rv-count{padding:5px 14px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);
+  color:#fbbf24;border-radius:99px;font-size:12px;font-weight:700;}
+.rv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:20px;}
+.rv-card{background:var(--card2);border:1px solid var(--border);border-radius:13px;
+  padding:16px;transition:.12s;}
+.rv-card:hover{border-color:var(--border2);}
+.rv-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.rv-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0;}
+.rv-name{font-size:13px;font-weight:700;}
+.rv-meta{font-size:11px;color:var(--text3);margin-top:1px;}
+.rv-course{font-size:11px;color:var(--orange);font-weight:600;margin-bottom:5px;}
+.rv-stars{font-size:12px;color:#fbbf24;margin-bottom:7px;letter-spacing:1px;}
+.rv-txt{font-size:12px;color:var(--text2);line-height:1.6;}
+.btn-more{padding:10px 28px;background:rgba(255,255,255,.04);border:1.5px solid var(--border2);
+  color:var(--text2);border-radius:10px;font-size:13px;font-weight:600;transition:.15s;}
+.btn-more:hover{background:rgba(255,255,255,.07);color:var(--text);}
+
+/* ── LOGIN MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);
+  z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
+.overlay.show{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:20px;
+  width:100%;max-width:360px;padding:26px 22px;position:relative;
+  box-shadow:0 32px 64px rgba(0,0,0,.7);}
+.modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;
+  background:rgba(255,255,255,.05);border:1px solid var(--border2);
+  color:var(--text2);border-radius:8px;font-size:15px;display:flex;
+  align-items:center;justify-content:center;transition:.12s;}
+.modal-close:hover{background:rgba(239,68,68,.1);color:#fca5a5;}
+.modal-logo{text-align:center;margin-bottom:20px;}
+.modal-ico{display:inline-flex;width:44px;height:44px;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  border-radius:12px;align-items:center;justify-content:center;font-size:21px;
+  box-shadow:0 0 18px rgba(249,115,22,.3);margin-bottom:8px;}
+.modal-title{font-size:17px;font-weight:800;}
+.modal-sub{font-size:12px;color:var(--text2);margin-top:3px;}
+.m-tabs{display:flex;background:var(--card2);border-radius:10px;padding:3px;gap:3px;margin-bottom:18px;}
+.m-tab{flex:1;padding:8px;background:transparent;border:none;border-radius:8px;
+  font-size:13px;font-weight:700;color:var(--text2);transition:.12s;}
+.m-tab.on{background:var(--card3);color:var(--text);}
+.m-err{display:none;font-size:12px;color:#fca5a5;padding:8px 12px;
+  background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.14);
+  border-radius:8px;margin-bottom:12px;text-align:center;}
+.m-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;
+  letter-spacing:.8px;display:block;margin-bottom:5px;}
+.m-inp{width:100%;padding:11px 13px;background:var(--card2);border:1.5px solid var(--border2);
+  border-radius:9px;font-size:14px;font-family:var(--sans);color:var(--text);
+  outline:none;margin-bottom:12px;transition:.15s;}
+.m-inp:focus{border-color:rgba(249,115,22,.4);box-shadow:0 0 0 3px rgba(249,115,22,.07);}
+.m-inp::placeholder{color:var(--text3);}
+.m-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;
+  box-shadow:0 4px 14px rgba(249,115,22,.28);transition:.15s;margin-top:2px;}
+.m-btn:hover{filter:brightness(1.08);}
+.m-note{font-size:11px;color:var(--text3);text-align:center;margin-top:10px;}
+.m-form{display:none;}
+.m-form.on{display:block;}
+
+/* ── PAYMENT MODAL ── */
+.pay-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);
+  z-index:600;display:none;align-items:flex-start;justify-content:center;
+  padding:16px;overflow-y:auto;}
+.pay-ov.show{display:flex;}
+.pay-box{background:var(--card);border:1px solid var(--border2);border-radius:20px;
+  width:100%;max-width:400px;margin:auto;overflow:hidden;
+  box-shadow:0 32px 64px rgba(0,0,0,.7);}
+.pay-hd{padding:16px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;}
+.pay-hd-title{font-size:15px;font-weight:800;}
+.btn-back{background:rgba(255,255,255,.05);border:1px solid var(--border2);
+  color:var(--text2);border-radius:8px;padding:6px 13px;font-size:12px;font-weight:600;transition:.12s;}
+.btn-back:hover{background:rgba(255,255,255,.08);}
+.pay-steps{display:flex;align-items:center;padding:16px 20px;gap:0;}
+.p-dot{width:26px;height:26px;border-radius:50%;background:var(--card2);
+  border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--text3);transition:.25s;flex-shrink:0;}
+.p-dot.on{background:var(--orange);border-color:var(--orange);color:#fff;
+  box-shadow:0 0 10px rgba(249,115,22,.4);}
+.p-dot.done{background:var(--green);border-color:var(--green);color:#fff;}
+.p-line{flex:1;height:2px;background:var(--card2);transition:.25s;}
+.p-line.on{background:var(--orange);}
+.p-sec{display:none;padding:16px 18px 20px;animation:fadeUp .2s ease;}
+.p-sec.on{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.p-course-row{display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:var(--card2);border:1px solid var(--border);border-radius:11px;margin-bottom:16px;}
+.p-em{font-size:28px;flex-shrink:0;}
+.p-cname{font-size:14px;font-weight:700;}
+.p-cprice{font-size:13px;color:var(--orange);font-weight:700;margin-top:2px;}
+.qr-wrap{text-align:center;margin-bottom:16px;}
+#payQR{width:178px;height:178px;border-radius:12px;border:2px solid var(--border2);background:#fff;padding:10px;margin:0 auto;box-sizing:border-box;display:flex;align-items:center;justify-content:center;}
+#payQR img{width:100%;height:100%;border-radius:4px;}
+.qr-sub{font-size:11px;color:var(--text3);margin-top:6px;}
+.upi-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;
+  letter-spacing:.7px;margin-bottom:6px;}
+.upi-row{display:flex;align-items:center;gap:8px;padding:10px 13px;
+  background:var(--card2);border:1px solid var(--border2);border-radius:10px;margin-bottom:12px;}
+.upi-txt{flex:1;font-family:var(--mono);font-size:13px;font-weight:600;}
+.btn-copy{background:rgba(249,115,22,.09);border:1px solid rgba(249,115,22,.18);
+  color:var(--orange);border-radius:7px;padding:6px 13px;font-size:12px;font-weight:600;transition:.12s;}
+.btn-copy:hover{background:rgba(249,115,22,.18);}
+.amt-big{text-align:center;font-size:28px;font-weight:900;color:var(--orange);
+  letter-spacing:-.5px;margin-bottom:16px;}
+.p-btn{width:100%;padding:12px;border:none;border-radius:10px;
+  font-size:14px;font-weight:700;font-family:var(--sans);transition:.15s;margin-top:4px;}
+.p-btn:hover{filter:brightness(1.08);}
+.p-btn-or{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;
+  box-shadow:0 4px 14px rgba(249,115,22,.28);}
+.p-btn-gr{background:linear-gradient(135deg,var(--green),#059669);color:#fff;
+  box-shadow:0 4px 14px rgba(16,185,129,.2);}
+.p-btn-sl{background:rgba(255,255,255,.04);border:1.5px solid var(--border2);color:var(--text2);margin-top:8px;}
+.step-list{display:flex;flex-direction:column;gap:9px;margin-bottom:16px;}
+.step-row{display:flex;align-items:center;gap:12px;padding:11px 13px;
+  background:var(--card2);border:1px solid var(--border);border-radius:10px;}
+.step-ico{font-size:19px;flex-shrink:0;}
+.step-txt{font-size:13px;color:var(--text2);}
+.code-inp{width:100%;padding:13px;background:var(--card2);border:1.5px solid var(--border2);
+  border-radius:10px;font-size:20px;font-family:var(--mono);font-weight:700;
+  color:var(--text);text-transform:uppercase;letter-spacing:6px;text-align:center;
+  outline:none;margin-bottom:8px;transition:.15s;}
+.code-inp:focus{border-color:rgba(249,115,22,.4);}
+.code-err{display:none;font-size:12px;color:#fca5a5;text-align:center;margin-bottom:10px;font-weight:600;}
+.success-wrap{text-align:center;padding:12px 0 8px;}
+.success-ico{font-size:56px;margin-bottom:12px;}
+.success-title{font-size:20px;font-weight:900;letter-spacing:-.3px;margin-bottom:6px;}
+.success-sub{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:18px;}
+
+/* ── TOAST ── */
+
+.coupon-row{display:flex;gap:8px;margin-bottom:10px;}
+.coupon-inp{flex:1;padding:10px 13px;background:var(--card2);border:1.5px solid var(--border2);
+  border-radius:9px;font-size:13px;font-family:var(--sans);color:var(--text);
+  outline:none;text-transform:uppercase;transition:.15s;letter-spacing:2px;}
+.coupon-inp:focus{border-color:rgba(16,185,129,.4);}
+.coupon-inp::placeholder{letter-spacing:0;text-transform:none;color:var(--text3);}
+.btn-coupon{padding:10px 16px;background:rgba(16,185,129,.09);border:1.5px solid rgba(16,185,129,.2);
+  color:var(--green);border-radius:9px;font-size:12px;font-weight:700;white-space:nowrap;transition:.15s;}
+.btn-coupon:hover{background:rgba(16,185,129,.16);}
+.coupon-msg{font-size:12px;text-align:center;margin-bottom:8px;font-weight:600;min-height:16px;}
+.coupon-ok{color:#34d399;} .coupon-err{color:#fca5a5;}
+.amt-strike{font-size:14px;color:var(--text3);text-decoration:line-through;margin-bottom:2px;text-align:center;}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  background:var(--card2);border:1px solid var(--border2);color:var(--text);
+  padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;display:none;
+  z-index:9999;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.5);
+  animation:toastIn .2s ease;}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(6px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hero{padding:36px 16px 32px;}
+  .stats-bar{max-width:100%;}
+  .stat-n{font-size:16px;}
+  .hd{padding:0 10px;gap:6px;height:54px;}
+  .hd-name{font-size:15px;}
+  .hd-ico{width:30px;height:30px;font-size:15px;}
+  .hd-r{gap:5px;}
+  .btn-lang{padding:5px 9px;font-size:11px;}
+  .btn-theme{width:32px;height:32px;font-size:14px;}
+  .btn-login{padding:6px 12px;font-size:12px;}
+  .hd-chip{padding:5px 9px;font-size:11px;max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .btn-logout{padding:5px 9px;font-size:11px;}
+  .tabs-inner,.wrap{padding:0 14px;}
+  .rv-hd{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hd">
+  <div class="hd-logo">
+    <div class="hd-ico">&#9889;</div>
+    <div class="hd-name">TechSumit</div>
+  </div>
+  <div class="hd-r">
+    <button class="btn-lang" id="langBtn" onclick="toggleLang()">&#2361;&#2367;&#2306;&#2342;&#2368;</button>
+    <button class="btn-theme" id="themeBtn" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+    <div id="hdrGuest"><button class="btn-login" onclick="showLogin()" id="loginBtnTxt">Login / Sign Up</button></div>
+    <div class="hd-user" id="hdrUser">
+      <div class="hd-chip" id="hdrName"></div>
+      <button class="btn-logout" id="logoutBtnTxt" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag" id="heroTag">&#127757; India's #1 Hindi Course Platform</div>
+  <h1 id="heroTitle">Learn Skills.<br>Build <span>Income.</span></h1>
+  <p class="hero-sub" id="heroSub">India's most affordable Hindi courses — learn from home and start earning today</p>
+  <div class="hero-btns">
+    <button class="btn-primary" id="exploreBtn" onclick="scrollToCourses()">Explore Courses &#8594;</button>
+    <button class="btn-secondary" id="myCoursesBtn" onclick="switchTab('my')">My Courses</button>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-n" id="statStudents">5,100+</div><div class="stat-l" id="statL1">Students</div></div>
+    <div class="stat"><div class="stat-n" id="statCourses">50+</div><div class="stat-l" id="statL2">Courses</div></div>
+    <div class="stat"><div class="stat-n" id="statRating">4.9&#9733;</div><div class="stat-l" id="statL3">Rating</div></div>
+    <div class="stat"><div class="stat-n" id="statLanguage">Hindi</div><div class="stat-l" id="statL4">Language</div></div>
+  </div>
+  <div class="badges" style="margin-top:14px;">
+    <span class="badge-trust" id="badge1">&#10003; Lifetime Access</span>
+    <span class="badge-trust" id="badge2">&#10003; Mobile Friendly</span>
+    <span class="badge-trust" id="badge3">&#10003; Beginner Friendly</span>
+    <span class="badge-trust" id="badge4">&#10003; Instant Access</span>
+  </div>
+</section>
+
+<div class="sec-div"></div>
+
+<!-- TABS -->
+<div class="tabs-bar" id="tabsBar">
+  <div class="tabs-inner">
+    <div class="tab on" id="tabAll" onclick="switchTab('all')" data-en="All Courses" data-hi="&#2360;&#2349;&#2368; &#2325;&#2379;&#2352;&#2381;&#2360;">All Courses</div>
+    <div class="tab" id="tabMy" onclick="switchTab('my')" data-en="&#128274; My Courses" data-hi="&#128274; &#2350;&#2375;&#2352;&#2375; &#2325;&#2379;&#2352;&#2381;&#2360;">&#128274; My Courses</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="wrap">
+
+  <!-- ALL COURSES -->
+  <div id="allTab" class="course-sec">
+    <div class="search-row">
+      <div class="search-box">
+        <span class="search-ico">&#128269;</span>
+        <input type="text" id="searchInp" placeholder="Search courses..." oninput="doSearch(this.value)">
+      </div>
+    </div>
+    <div class="filters" id="filterWrap"></div>
+    <div class="c-grid" id="courseGrid"></div>
+  </div>
+
+  <!-- MY COURSES -->
+  <div id="myTab" style="display:none;" class="my-sec">
+    <div id="myWrap"></div>
+  </div>
+
+</div>
+
+<!-- REVIEWS -->
+<section class="rv-sec">
+  <div class="wrap">
+    <div class="rv-hd">
+      <div class="rv-title" id="rvTitle">&#11088; Student Reviews</div>
+      <div class="rv-count" id="rvCount">2,100+ Reviews</div>
+    </div>
+    <div class="rv-grid" id="rvGrid"></div>
+    <div style="text-align:center;">
+      <button class="btn-more" id="rvMoreBtn" onclick="loadMoreRv()">Load More Reviews &#8595;</button>
+    </div>
+  </div>
+</section>
+
+<!-- LOGIN MODAL -->
+<div class="overlay" id="loginOv">
+  <div class="modal">
+    <button class="modal-close" onclick="hideLogin()">&#x2715;</button>
+    <div class="modal-logo">
+      <div class="modal-ico">&#9889;</div>
+      <div class="modal-title">TechSumit</div>
+      <div class="modal-sub" id="loginSub">Login or create your account</div>
+    </div>
+    <div class="m-tabs">
+      <button class="m-tab on" id="mtab1" onclick="switchMTab(0)" id="loginTabBtn">Login</button>
+      <button class="m-tab" id="mtab2" onclick="switchMTab(1)" id="signupTabBtn">Sign Up</button>
+    </div>
+
+    <div class="m-form on" id="mf1">
+      <div class="m-err" id="loginErr"></div>
+      <label class="m-lbl" id="phoneLbl1">Phone Number</label>
+      <input class="m-inp" type="tel" id="loginPhone" placeholder="10 digit number" maxlength="10">
+      <label class="m-lbl" id="pinLbl1">4-Digit PIN</label>
+      <input class="m-inp" type="password" id="loginPin" placeholder="&#9679;&#9679;&#9679;&#9679;" maxlength="4">
+      <button class="m-btn" id="loginSubmitBtn" onclick="doLogin()">Login &#8594;</button>
+      <div class="m-note" id="loginNote">New here? Use the "Sign Up" tab above!</div>
+    </div>
+
+    <div class="m-form" id="mf2">
+      <div class="m-err" id="regErr"></div>
+      <label class="m-lbl" id="nameLbl">Your Name</label>
+      <input class="m-inp" type="text" id="regName" placeholder="Enter your name">
+      <label class="m-lbl" id="phoneLbl2">Phone Number</label>
+      <input class="m-inp" type="tel" id="regPhone" placeholder="10 digit number" maxlength="10">
+      <label class="m-lbl" id="pinLbl2">Create 4-Digit PIN</label>
+      <input class="m-inp" type="password" id="regPin" placeholder="Any 4 digits" maxlength="4">
+      <button class="m-btn" id="signupSubmitBtn" onclick="doRegister()">Create Account &#8594;</button>
+      <div class="m-note" id="signupNote">Remember your PIN — you'll need it to login!</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="pay-ov" id="payOv">
+  <div class="pay-box">
+    <div class="pay-hd">
+      <div class="pay-hd-title" id="payModalTitle">Complete Purchase</div>
+      <button class="btn-back" id="payBackBtn" onclick="closePay()">&#8592; Back</button>
+    </div>
+    <div class="pay-steps">
+      <div class="p-dot on" id="pd1">1</div>
+      <div class="p-line" id="pl1"></div>
+      <div class="p-dot" id="pd2">2</div>
+      <div class="p-line" id="pl2"></div>
+      <div class="p-dot" id="pd3">3</div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="p-sec on" id="ps1">
+      <div class="p-course-row">
+        <div class="p-em" id="payEm">&#128218;</div>
+        <div><div class="p-cname" id="payTitle">Course</div><div class="p-cprice" id="payPrice">&#8377;0</div></div>
+      </div>
+      <div class="qr-wrap">
+        <div id="payQR" style="display:none;background:#fff;padding:10px;border-radius:12px;width:178px;height:178px;margin:0 auto;display:flex;align-items:center;justify-content:center;"></div>
+        <div class="qr-sub" id="qrSub" style="margin-top:8px;">📱 Scan to Pay — PhonePe / GPay / Paytm</div>
+        <div id="qrScanHint" style="display:none;margin-top:6px;padding:6px 14px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18);border-radius:8px;font-size:11px;color:#34d399;font-weight:600;">✅ Amount auto-fills in your payment app!</div>
+      </div>
+      <div class="upi-lbl" id="upiLbl">UPI ID:</div>
+      <div class="upi-row">
+        <div class="upi-txt" id="upiDisplay">9234090855@ibl</div>
+        <button class="btn-copy" id="copyBtn" onclick="cpUPI()">Copy</button>
+      </div>
+      <div style="margin-bottom:4px;">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;" id="couponLbl">Have a Coupon Code?</div>
+        <div class="coupon-row">
+          <input class="coupon-inp" type="text" id="couponInp" placeholder="Enter code..." maxlength="20" oninput="this.value=this.value.toUpperCase()">
+          <button class="btn-coupon" id="applyCouponBtn" onclick="applyCoupon()">Apply</button>
+        </div>
+        <div class="coupon-msg" id="couponMsg"></div>
+      </div>
+      <div class="amt-strike" id="amtStrike" style="display:none;"></div>
+      <div class="amt-big" id="payAmt">&#8377;0</div>
+      <button class="p-btn p-btn-or" id="paidBtn" onclick="goPay(2)">I've Made the Payment &#8594;</button>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="p-sec" id="ps2">
+      <div class="step-list">
+        <div class="step-row"><div class="step-ico">&#128248;</div><div class="step-txt" id="step2a">Take a screenshot of your payment</div></div>
+        <div class="step-row"><div class="step-ico">&#128172;</div><div class="step-txt" id="step2b">Send it to us on WhatsApp</div></div>
+        <div class="step-row"><div class="step-ico">&#9201;</div><div class="step-txt" id="step2c">You'll receive a 5-letter code within minutes</div></div>
+        <div class="step-row"><div class="step-ico">&#128273;</div><div class="step-txt" id="step2d">Enter the code below to unlock your course</div></div>
+      </div>
+      <button class="p-btn p-btn-gr" id="waBtn" onclick="openWA()">&#128172; Send Screenshot on WhatsApp</button>
+      <button class="p-btn p-btn-sl" id="haveCodeBtn" onclick="goPay(3)">I have the code &#8594;</button>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="p-sec" id="ps3">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px;text-align:center;" id="step3Sub">Enter the 5-letter code you received:</p>
+      <input class="code-inp" type="text" id="codeInp" maxlength="5" placeholder="XXXXX" oninput="this.value=this.value.toUpperCase()">
+      <div class="code-err" id="codeErr">&#x26A0; Wrong code. Try again!</div>
+      <button class="p-btn p-btn-gr" id="unlockBtn" onclick="submitCode()">Unlock Course &#8594;</button>
+      <button class="p-btn p-btn-sl" onclick="goPay(2)">&#8592; Back</button>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="p-sec" id="ps4">
+      <div class="success-wrap">
+        <div class="success-ico">&#127881;</div>
+        <div class="success-title" id="successTitle">Course Unlocked!</div>
+        <div class="success-sub" id="successSub">Your course has been added to your account. Go to <b>My Courses</b> to start learning!</div>
+        <button class="p-btn p-btn-gr" id="goMyBtn" onclick="closePay();switchTab('my')">Go to My Courses &#8594;</button>
+        <button class="p-btn p-btn-sl" id="closePayBtn" onclick="closePay()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div class="vid-ov" id="vidOv">
+  <div class="vid-top">
+    <div class="vid-title" id="vidTitle"></div>
+    <div class="vid-close" onclick="closeVid()">&#x2715;</div>
+  </div>
+  <div class="vid-frame-wrap" id="vidWrap">
+    <div class="vid-no-link"><div class="vid-no-ico">🎬</div><div class="vid-no-txt">Video abhi available nahi hai.</div></div>
+  </div>
+</div>
+
+<!-- MATERIALS MODAL -->
+<div class="mat-ov" id="matOv">
+  <div class="mat-box">
+    <div class="mat-hd">
+      <div class="mat-hd-info">
+        <div class="mat-hd-title">📦 Course Materials</div>
+        <div class="mat-hd-sub" id="matSub"></div>
+      </div>
+      <div class="mat-close" onclick="closeMat()">&#x2715;</div>
+    </div>
+    <div class="mat-body" id="matBody"></div>
+  </div>
+</div>
+
+<!-- AI PROMPTS MODAL -->
+<div class="prm-ov" id="prmOv">
+  <div class="prm-box">
+    <div class="prm-hd">
+      <div class="prm-hd-info">
+        <div class="prm-hd-title">🤖 AI Prompts</div>
+        <div class="prm-hd-sub" id="prmSub"></div>
+      </div>
+      <div class="prm-close" onclick="closePrm()">&#x2715;</div>
+    </div>
+    <div class="prm-body" id="prmBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ───
+var DB  = "https://techsumit-ff14d-default-rtdb.firebaseio.com";
+var UPI = "9234090855@ibl";
+var WA  = "919234090855";
+var SEC = "TechSumitAdmin@999";
+var QR  = "data:image/jpeg;base64,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";
+
+// ─── STATE ───
+var ALL_CS=[], CUR_USER=null, CUR_COURSE=null, CUR_FILT="all", LANG="en";
+var ALL_RV=[], RV_SHOWN=0;
+
+// ─── THEME TOGGLE ───
+function toggleTheme(){
+  var isLight = document.body.classList.toggle("light-mode");
+  document.getElementById("themeBtn").textContent = isLight ? "☀️" : "🌙";
+  try{ localStorage.setItem("ts-theme", isLight ? "light" : "dark"); }catch(e){}
+}
+function loadTheme(){
+  try{
+    var saved = localStorage.getItem("ts-theme");
+    if(saved === "light"){
+      document.body.classList.add("light-mode");
+      document.getElementById("themeBtn").textContent = "☀️";
+    }
+  }catch(e){}
+}
+
+// ─── LANG ───
+var T={
+  en:{
+    langBtn:"हिंदी",
+    heroTag:"India's #1 Hindi Course Platform",
+    heroTitle:"Learn Skills.<br>Build <span>Income.<\/span>",
+    heroSub:"India's most affordable Hindi courses — learn from home and start earning today",
+    exploreBtn:"Explore Courses →",
+    myBtn:"My Courses",
+    loginBtn:"Login / Sign Up",
+    logoutBtn:"Logout",
+    loginSub:"Login or create your account",
+    mtab1:"Login",mtab2:"Sign Up",
+    phoneLbl:"Phone Number",pinLbl:"4-Digit PIN",nameLbl:"Your Name",
+    loginSubmit:"Login →",signupSubmit:"Create Account →",
+    loginNote:'New here? Use the "Sign Up" tab above!',
+    signupNote:"Remember your PIN — you'll need it to login!",
+    b1:"✓ Lifetime Access",b2:"✓ Mobile Friendly",b3:"✓ Beginner Friendly",b4:"✓ Instant Access",
+    statL:["Students","Courses","Rating","Language"],
+    rvTitle:"⭐ Student Reviews",rvCount:"2,100+ Reviews",rvMore:"Load More Reviews ↓",
+    buyNow:"Buy Now",comingSoon:"Coming Soon",upcoming:"⏱ Upcoming",
+    watchNow:"🎬 Watch Now",
+    emptyTitle:"No courses yet",emptySub:"Browse and buy your first course!",emptyBtn:"Browse Courses",
+    loginPromptTitle:"Login to see your courses",loginPromptSub:"Access all purchased courses after logging in",loginPromptBtn:"Login / Sign Up",
+    welcomeSub:"course purchased",
+    preStatus:"Your course is being prepared — launching soon!",preConf:"✓ Payment confirmed · Access the moment it launches",
+    payModalTitle:"Complete Purchase",payBack:"← Back",
+    qrSub:"PhonePe / GPay / Paytm / Any UPI",upiLbl:"UPI ID:",copyBtn:"Copy",
+    paidBtn:"I've Made the Payment →",
+    step2a:"Take a screenshot of your payment",step2b:"Send it to us on WhatsApp",
+    step2c:"You'll receive a 5-letter code within minutes",step2d:"Enter the code below to unlock your course",
+    waBtn:"💬 Send Screenshot on WhatsApp",haveCode:"I have the code →",
+    step3Sub:"Enter the 5-letter code you received:",unlockBtn:"Unlock Course →",
+    successTitle:"Course Unlocked!",successSub:"Your course has been added to your account. Go to <b>My Courses<\/b> to start learning!",
+    goMyBtn:"Go to My Courses →",closePayBtn:"Close",
+    hot:"🔥 HOT",
+    searchPh:"Search courses by name or category...",
+    codeErr:"⚠ Wrong code. Try again!",
+    couponLbl:"Have a Coupon Code?",applyBtn:"Apply",removeBtn:"Remove"
+  },
+  hi:{
+    langBtn:"English",
+    heroTag:"भारत का नंबर 1 हिंदी कोर्स प्लेटफॉर्म",
+    heroTitle:"स्किल सीखो।<br><span>कमाई करो।<\/span>",
+    heroSub:"घर बैठे सीखो — हिंदी में सब कुछ, सबसे सस्ते दाम में",
+    exploreBtn:"कोर्स देखें →",
+    myBtn:"मेरे कोर्स",
+    loginBtn:"लॉगिन / साइन अप",
+    logoutBtn:"लॉगआउट",
+    loginSub:"लॉगिन करें या अकाउंट बनाएं",
+    mtab1:"लॉगिन",mtab2:"साइन अप",
+    phoneLbl:"फोन नंबर",pinLbl:"4 अंकों का PIN",nameLbl:"आपका नाम",
+    loginSubmit:"लॉगिन करें →",signupSubmit:"अकाउंट बनाएं →",
+    loginNote:"नए हैं? ऊपर 'साइन अप' टैब use करें!",
+    signupNote:"PIN याद रखें — लॉगिन के लिए जरूरी है!",
+    b1:"✓ लाइफटाइम एक्सेस",b2:"✓ मोबाइल फ्रेंडली",b3:"✓ बिगिनर फ्रेंडली",b4:"✓ तुरंत एक्सेस",
+    statL:["स्टूडेंट्स","कोर्स","रेटिंग","भाषा"],
+    rvTitle:"⭐ स्टूडेंट्स के रिव्यू",rvCount:"2,100+ रिव्यू",rvMore:"और रिव्यू देखें ↓",
+    buyNow:"अभी खरीदें",comingSoon:"जल्द आ रहा है",upcoming:"⏱ आने वाला है",
+    watchNow:"🎬 अभी देखें",
+    emptyTitle:"अभी कोई कोर्स नहीं",emptySub:"नीचे कोर्स देखें और पहला कोर्स खरीदें!",emptyBtn:"कोर्स देखें",
+    loginPromptTitle:"कोर्स देखने के लिए लॉगिन करें",loginPromptSub:"लॉगिन के बाद सभी खरीदे गए कोर्स दिखेंगे",loginPromptBtn:"लॉगिन / साइन अप",
+    welcomeSub:"कोर्स खरीदा",
+    preStatus:"आपका कोर्स तैयार हो रहा है — जल्द मिलेगा!",preConf:"✓ पेमेंट कन्फर्म · लॉन्च होते ही एक्सेस मिलेगा",
+    payModalTitle:"खरीदारी पूरी करें",payBack:"← वापस",
+    qrSub:"PhonePe / GPay / Paytm / कोई भी UPI",upiLbl:"UPI ID:",copyBtn:"कॉपी",
+    paidBtn:"मैंने पेमेंट कर दिया →",
+    step2a:"पेमेंट का स्क्रीनशॉट लें",step2b:"WhatsApp पर हमें भेजें",
+    step2c:"कुछ मिनटों में 5 अक्षर का कोड मिलेगा",step2d:"नीचे कोड डालें और कोर्स अनलॉक करें",
+    waBtn:"💬 WhatsApp पर स्क्रीनशॉट भेजें",haveCode:"मेरे पास कोड है →",
+    step3Sub:"आपको मिला 5 अक्षर का कोड डालें:",unlockBtn:"कोर्स अनलॉक करें →",
+    successTitle:"कोर्स अनलॉक हो गया!",successSub:"कोर्स आपके अकाउंट में जुड़ गया। <b>मेरे कोर्स<\/b> में जाएं!",
+    goMyBtn:"मेरे कोर्स देखें →",closePayBtn:"बंद करें",
+    hot:"🔥 HOT",
+    searchPh:"कोर्स का नाम या कैटेगरी खोजें...",
+    codeErr:"⚠ गलत कोड। फिर से कोशिश करें!",
+    couponLbl:"कूपन कोड है?",applyBtn:"लगाएं",removeBtn:"हटाएं"
+  }
+};
+
+function t(k){return (T[LANG]&&T[LANG][k]!==undefined)?T[LANG][k]:T.en[k];}
+
+function toggleLang(){
+  LANG=LANG==="en"?"hi":"en";
+  applyLang();
+  renderC(filteredCourses());
+  if(document.getElementById("myTab").style.display!=="none") renderMy();
+}
+
+function applyLang(){
+  var t2=T[LANG];
+  function set(id,val,html){var e=document.getElementById(id);if(!e)return;if(html)e.innerHTML=val;else e.textContent=val;}
+  function setAttr(id,attr,val){var e=document.getElementById(id);if(e)e[attr]=val;}
+  set("langBtn",t2.langBtn);
+  set("heroTag",t2.heroTag);
+  set("heroTitle",t2.heroTitle,true);
+  set("heroSub",t2.heroSub);
+  set("exploreBtn",t2.exploreBtn);
+  set("myCoursesBtn",t2.myBtn);
+  set("loginBtnTxt",t2.loginBtn);
+  set("logoutBtnTxt",t2.logoutBtn);
+  set("loginSub",t2.loginSub);
+  set("mtab1",t2.mtab1); set("mtab2",t2.mtab2);
+  set("phoneLbl1",t2.phoneLbl); set("pinLbl1",t2.pinLbl);
+  set("nameLbl",t2.nameLbl); set("phoneLbl2",t2.phoneLbl); set("pinLbl2",t2.pinLbl);
+  set("loginSubmitBtn",t2.loginSubmit); set("signupSubmitBtn",t2.signupSubmit);
+  set("loginNote",t2.loginNote); set("signupNote",t2.signupNote);
+  set("badge1",t2.b1); set("badge2",t2.b2); set("badge3",t2.b3); set("badge4",t2.b4);
+  set("statL1",t2.statL[0]); set("statL2",t2.statL[1]); set("statL3",t2.statL[2]); set("statL4",t2.statL[3]);
+  set("rvTitle",t2.rvTitle); set("rvCount",t2.rvCount); set("rvMoreBtn",t2.rvMore);
+  setAttr("searchInp","placeholder",t2.searchPh);
+  set("tabAll",t2.statL[1]==="कोर्स"?"सभी कोर्स":"All Courses");
+  set("tabMy",t2.statL[1]==="कोर्स"?"🔒 मेरे कोर्स":"🔒 My Courses");
+  set("payModalTitle",t2.payModalTitle); set("payBackBtn",t2.payBack);
+  set("qrSub",t2.qrSub); set("upiLbl",t2.upiLbl); set("copyBtn",t2.copyBtn);
+  set("paidBtn",t2.paidBtn);
+  set("step2a",t2.step2a); set("step2b",t2.step2b); set("step2c",t2.step2c); set("step2d",t2.step2d);
+  set("waBtn",t2.waBtn); set("haveCodeBtn",t2.haveCode);
+  set("step3Sub",t2.step3Sub); set("unlockBtn",t2.unlockBtn);
+  set("successTitle",t2.successTitle);
+  set("successSub",t2.successSub,true);
+  set("goMyBtn",t2.goMyBtn); set("closePayBtn",t2.closePayBtn);
+}
+
+// ─── USER ───
+function loadUser(){try{CUR_USER=JSON.parse(localStorage.getItem("ts_u")||"null");}catch(e){CUR_USER=null;}updateHdr();}
+function saveUser(u){CUR_USER=u;try{localStorage.setItem("ts_u",JSON.stringify(u));}catch(e){}updateHdr();}
+function clearUser(){CUR_USER=null;try{localStorage.removeItem("ts_u");}catch(e){}updateHdr();}
+function updateHdr(){
+  var g=document.getElementById("hdrGuest"),u=document.getElementById("hdrUser"),n=document.getElementById("hdrName");
+  if(CUR_USER){g.style.display="none";u.style.display="flex";if(n)n.textContent="👤 "+CUR_USER.name;}
+  else{g.style.display="flex";u.style.display="none";}
+}
+function doLogout(){clearUser();switchTab("all");toast("Logged out!");}
+function showLogin(){document.getElementById("loginOv").className="overlay show";}
+function hideLogin(){document.getElementById("loginOv").className="overlay";}
+function switchMTab(n){
+  ["mtab1","mtab2"].forEach(function(id,i){document.getElementById(id).className="m-tab"+(i===n?" on":"");});
+  ["mf1","mf2"].forEach(function(id,i){document.getElementById(id).className="m-form"+(i===n?" on":"");});
+  ["loginErr","regErr"].forEach(function(id){var e=document.getElementById(id);if(e)e.style.display="none";});
+}
+function showErr(id,msg){var e=document.getElementById(id);if(e){e.textContent=msg;e.style.display="block";}}
+
+function doLogin(){
+  var phone=document.getElementById("loginPhone").value.replace(/\D/g,"");
+  var pin=document.getElementById("loginPin").value.replace(/\D/g,"");
+  document.getElementById("loginErr").style.display="none";
+  if(phone.length!==10){showErr("loginErr","Enter 10-digit number!");return;}
+  if(pin.length!==4){showErr("loginErr","Enter 4-digit PIN!");return;}
+  xr("GET","/users/"+phone+".json",null,function(d,e){
+    if(e){showErr("loginErr","Network error. Try again!");return;}
+    if(!d||!d.pin){showErr("loginErr","Not registered. Please Sign Up!");return;}
+    if(d.pin!==pin){showErr("loginErr","Wrong PIN. Try again!");return;}
+    saveUser({name:d.name,phone:phone});
+    hideLogin();toast("Welcome back, "+d.name+"! 👋");
+    if(document.getElementById("myTab").style.display!=="none")renderMy();
+  });
+}
+
+function doRegister(){
+  var name=document.getElementById("regName").value.trim();
+  var phone=document.getElementById("regPhone").value.replace(/\D/g,"");
+  var pin=document.getElementById("regPin").value.replace(/\D/g,"");
+  document.getElementById("regErr").style.display="none";
+  if(!name){showErr("regErr","Enter your name!");return;}
+  if(phone.length!==10){showErr("regErr","Enter 10-digit number!");return;}
+  if(pin.length!==4){showErr("regErr","Create a 4-digit PIN!");return;}
+  xr("GET","/users/"+phone+".json",null,function(d,e){
+    if(e){showErr("regErr","Network error!");return;}
+    if(d&&d.pin){showErr("regErr","Phone already registered. Please Login!");return;}
+    xr("PUT","/users/"+phone+".json",{name:name,pin:pin,joinedAt:Date.now()},function(d2,e2){
+      if(e2){showErr("regErr","Error. Try again!");return;}
+      saveUser({name:name,phone:phone});hideLogin();toast("Welcome, "+name+"! 🎉");
+    });
+  });
+}
+
+// ─── TABS ───
+function switchTab(tab){
+  document.getElementById("allTab").style.display=tab==="all"?"block":"none";
+  document.getElementById("myTab").style.display=tab==="my"?"block":"none";
+  document.getElementById("tabAll").className="tab"+(tab==="all"?" on":"");
+  document.getElementById("tabMy").className="tab"+(tab==="my"?" on":"");
+  if(tab==="my")renderMy();
+}
+function scrollToCourses(){
+  var el=document.getElementById("tabsBar");
+  if(el)el.scrollIntoView({behavior:"smooth"});
+}
+
+// ─── MY COURSES ───
+function renderMy(){
+  var wrap=document.getElementById("myWrap");
+  if(!CUR_USER){
+    wrap.innerHTML='<div class="empty"><div class="empty-ico">🔒</div>'+
+      '<div class="empty-title">'+t("loginPromptTitle")+'</div>'+
+      '<div class="empty-sub">'+t("loginPromptSub")+'</div>'+
+      '<button class="btn-empty" onclick="showLogin()">'+t("loginPromptBtn")+'</button></div>';
+    return;
+  }
+  wrap.innerHTML='<div style="text-align:center;padding:40px;color:var(--text2);">Loading...</div>';
+  xr("GET","/users/"+CUR_USER.phone+"/courses.json",null,function(data,e){
+    var count=data?Object.keys(data).length:0;
+    var html='<div class="welcome-card"><div class="welcome-name">'+
+      (LANG==="hi"?"नमस्ते, ":"Welcome, ")+CUR_USER.name+'! 👋</div>'+
+      '<div class="welcome-sub">'+count+' '+t("welcomeSub")+'</div></div>';
+    if(!data||!count){
+      html+='<div class="empty"><div class="empty-ico">🎓</div>'+
+        '<div class="empty-title">'+t("emptyTitle")+'</div>'+
+        '<div class="empty-sub">'+t("emptySub")+'</div>'+
+        '<button class="btn-empty" onclick="switchTab(\'all\')">'+t("emptyBtn")+'</button></div>';
+      wrap.innerHTML=html;return;
+    }
+    var ids=Object.keys(data);
+    var found=ALL_CS.filter(function(c){return ids.indexOf(c.id)!==-1;});
+    var foundIds=found.map(function(c){return c.id;});
+    var extraIds=ids.filter(function(id){return foundIds.indexOf(id)===-1;});
+    html+='<div class="c-grid">';
+    found.forEach(function(c){
+      var vl=(data[c.id]&&data[c.id].videoLink)||c.videoLink||"";
+      var mTh=c.thumbnail?'<img src="'+c.thumbnail+'" alt="'+c.title+'" loading="lazy">':'<span class="my-em">'+c.emoji+'</span>';
+      var hasM=c.materials&&c.materials.length>0;
+      var hasP=c.prompts&&c.prompts.length>0;
+      var mBtn=hasM?'<button class="btn-materials" onclick="openMat(\''+c.id+'\')">📦 Materials ('+c.materials.length+')</button>':'';
+      var pBtn=hasP?'<button class="btn-prompts" onclick="openPrm(\''+c.id+'\')">🤖 AI Prompts ('+c.prompts.length+')</button>':'';
+      if(c.live){
+        html+='<div class="my-card"><div class="my-thumb">'+mTh+
+          '<div class="my-owned">✓ Purchased</div></div>'+
+          '<div class="my-body"><div class="my-cat">'+(c.category||"")+'</div>'+
+          '<div class="my-title">'+c.title+'</div>'+
+          '<button class="btn-watch" onclick="openVid(\''+c.id+'\',\''+c.title.replace(/\'/g,"\\'")+'\',\''+vl+'\')">'+t("watchNow")+'</button>'+
+          mBtn+pBtn+'</div></div>';
+      } else {
+        html+='<div class="pre-card"><div class="pre-badge"><div class="pre-dot"></div>PRE-ENROLLED</div>'+
+          '<div style="font-size:36px;margin-bottom:8px;">'+c.emoji+'</div>'+
+          '<div style="font-size:15px;font-weight:800;margin-bottom:4px;">'+c.title+'</div>'+
+          '<div style="font-size:12px;color:var(--text2);margin-bottom:10px;">'+(c.desc||"").substring(0,60)+'...</div>'+
+          '<div class="pre-status"><div class="pre-dot"></div>'+t("preStatus")+'</div>'+
+          '<div class="pre-conf">'+t("preConf")+'</div>'+
+          mBtn+pBtn+'</div>';
+      }
+    });
+    extraIds.forEach(function(id){
+      var entry=data[id]||{};
+      var vl=entry.videoLink||"";
+      var title=entry.title||(LANG==="hi"?"कोर्स आ रहा है":"Course Coming Soon");
+      if(vl){
+        html+='<div class="my-card"><div class="my-thumb"><span class="my-em">🎬</span>'+
+          '<div class="my-owned">✓ Purchased</div></div>'+
+          '<div class="my-body"><div class="my-cat">Your Course</div>'+
+          '<div class="my-title">'+title+'</div>'+
+          '<button class="btn-watch" onclick="openVid(\''+id+'\',\''+title+'\',\''+vl+'\')">'+t("watchNow")+'</button></div></div>';
+      } else {
+        html+='<div class="pre-card"><div class="pre-badge"><div class="pre-dot"></div>PRE-ENROLLED</div>'+
+          '<div style="font-size:36px;margin-bottom:8px;">🎬</div>'+
+          '<div style="font-size:15px;font-weight:800;margin-bottom:4px;">'+title+'</div>'+
+          '<div class="pre-status"><div class="pre-dot"></div>'+t("preStatus")+'</div>'+
+          '<div class="pre-conf">'+t("preConf")+'</div></div>';
+      }
+    });
+    html+='</div>';
+    wrap.innerHTML=html;
+  });
+}
+
+// ─── COURSES ───
+function getDefault(){return[
+  {id:"c1",emoji:"🎬",title:"Video Editing A to Z",category:"Editing",desc:"Professional video editing on mobile. Reels, YouTube Shorts, vlogs — everything in one course!",price:99,originalPrice:999,rating:4.9,reviews:2847,buyers:"3.2k",isHot:true,isNew:false,live:true,videoLink:""},
+  {id:"c2",emoji:"🤖",title:"AI Tools Masterclass",category:"AI",desc:"ChatGPT, Midjourney, automation tools. Earn money from home using AI!",price:99,originalPrice:799,rating:4.8,reviews:1923,buyers:"2.1k",isHot:false,isNew:true,live:true,videoLink:""},
+  {id:"c3",emoji:"💰",title:"USA Automation Finance",category:"Automation",desc:"Earn in dollars! USA finance niche automation from home.",price:199,originalPrice:1999,rating:4.9,reviews:1456,buyers:"1.8k",isHot:true,isNew:true,live:true,videoLink:""},
+  {id:"c4",emoji:"📺",title:"YouTube Growth Blueprint",category:"YouTube",desc:"0 to 10K subscribers! Content strategy, SEO, monetization — all in Hindi.",price:99,originalPrice:899,rating:4.7,reviews:987,buyers:"1.1k",isHot:false,isNew:false,live:false,videoLink:""},
+  {id:"c5",emoji:"💻",title:"Freelancing Pro",category:"Freelancing",desc:"Earn Rs.50,000+ monthly from Fiverr and Upwork. Complete guide in Hindi!",price:149,originalPrice:1499,rating:4.8,reviews:743,buyers:"890+",isHot:false,isNew:false,live:false,videoLink:""},
+  {id:"c6",emoji:"🚀",title:"Stock Market for Beginners",category:"Finance",desc:"Share market, mutual funds, SIP — everything explained simply in Hindi.",price:149,originalPrice:1499,rating:4.8,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""},
+  {id:"c7",emoji:"🌐",title:"Digital Marketing Complete",category:"Marketing",desc:"Social media, SEO, Google Ads — full digital marketing course!",price:199,originalPrice:1999,rating:4.9,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""},
+  {id:"c8",emoji:"💳",title:"Dropshipping Masterclass",category:"Business",desc:"Start online business without inventory. Earn lakhs from home!",price:299,originalPrice:2999,rating:4.9,reviews:0,buyers:"",isHot:true,isNew:true,live:false,videoLink:""},
+  {id:"c9",emoji:"📚",title:"Content Writing Pro",category:"Freelancing",desc:"Earn from writing! Blogs, copywriting, social media content.",price:99,originalPrice:899,rating:4.7,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""},
+  {id:"c10",emoji:"📱",title:"Instagram Growth Secrets",category:"Marketing",desc:"Grow 0 to 100K followers! Reels strategy, hashtags, monetization.",price:99,originalPrice:799,rating:4.8,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""},
+  {id:"c11",emoji:"🌟",title:"Canva Design Mastery",category:"Design",desc:"Create professional graphics, logos, and social media posts!",price:99,originalPrice:699,rating:4.8,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""},
+  {id:"c12",emoji:"🔍",title:"SEO & Blogging Income",category:"Marketing",desc:"Start a blog and earn passive income. Google ranking secrets!",price:149,originalPrice:1299,rating:4.7,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""},
+  {id:"c13",emoji:"🎮",title:"Print on Demand Business",category:"Business",desc:"Sell custom products online without investment. Perfect side income!",price:199,originalPrice:1799,rating:4.8,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""},
+  {id:"c14",emoji:"🎶",title:"Podcast & Audio Branding",category:"Content",desc:"Start your podcast and build a personal brand. Monetize your voice!",price:149,originalPrice:1299,rating:4.7,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""},
+  {id:"c15",emoji:"📈",title:"Crypto Basics & Safety",category:"Finance",desc:"Understand cryptocurrency, Bitcoin, blockchain safely in Hindi.",price:199,originalPrice:1999,rating:4.6,reviews:0,buyers:"",isHot:false,isNew:true,live:false,videoLink:""}
+];}
+
+function filteredCourses(){
+  var q=document.getElementById("searchInp")?document.getElementById("searchInp").value:"";
+  return ALL_CS.filter(function(c){
+    var mf=CUR_FILT==="all"||c.category===CUR_FILT;
+    var mq=!q||c.title.toLowerCase().includes(q.toLowerCase())||(c.category||"").toLowerCase().includes(q.toLowerCase());
+    return mf&&mq;
+  });
+}
+
+function loadCourses(){
+  ALL_CS=getDefault();buildFilters();renderC(ALL_CS);
+  xr("GET","/courses.json",null,function(d){
+    if(d&&Object.keys(d).length>0){ALL_CS=Object.keys(d).map(function(k){var c=d[k];c.id=k;return c;});buildFilters();renderC(ALL_CS);}
+  });
+  xr("GET","/settings.json",null,function(s){
+    if(!s)return;
+    function upd(id,v){if(v){var e=document.getElementById(id);if(e)e.textContent=v;}}
+    if(LANG==="en"){
+      upd("statStudents",s.students);upd("statCourses",s.courses);
+      upd("statRating",s.rating);upd("statLanguage",s.language);
+      upd("heroTag",s.tag);upd("heroSub",s.heroSub);
+      if(s.hero){var h=document.getElementById("heroTitle");if(h)h.innerHTML=s.hero;}
+      if(s.badge1){var e=document.getElementById("badge1");if(e)e.textContent="✓ "+s.badge1;}
+      if(s.badge2){var e=document.getElementById("badge2");if(e)e.textContent="✓ "+s.badge2;}
+      if(s.badge3){var e=document.getElementById("badge3");if(e)e.textContent="✓ "+s.badge3;}
+      if(s.badge4){var e=document.getElementById("badge4");if(e)e.textContent="✓ "+s.badge4;}
+    }
+    if(s.upi){UPI=s.upi;var ud=document.getElementById("upiDisplay");if(ud)ud.textContent=s.upi;}
+    if(s.wa)WA=s.wa;
+  });
+}
+
+function buildFilters(){
+  var cats=["all"];
+  ALL_CS.forEach(function(c){if(c.category&&cats.indexOf(c.category)===-1)cats.push(c.category);});
+  var fw=document.getElementById("filterWrap");
+  fw.innerHTML=cats.map(function(cat){
+    return '<button class="filt'+(cat===CUR_FILT?" on":"")+'" onclick="setFilt(\''+cat+'\')">'+(cat==="all"?"All":cat)+'</button>';
+  }).join('');
+}
+function setFilt(cat){CUR_FILT=cat;buildFilters();renderC(filteredCourses());}
+function doSearch(q){renderC(filteredCourses());}
+
+function renderC(arr){
+  var g=document.getElementById("courseGrid");
+  if(!arr||!arr.length){
+    g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3);">'+
+      (LANG==="hi"?"कोई कोर्स नहीं मिला।":"No courses found.")+'</div>';return;
+  }
+  g.innerHTML=arr.map(function(c){
+    var stars="";for(var i=0;i<5;i++)stars+=i<Math.floor(c.rating||4.9)?"★":"☆";
+    var bHTML='<div class="c-badges">';
+    if(c.isHot)bHTML+='<span class="bdg bdg-hot">'+t("hot")+'</span>';
+    if(c.isNew)bHTML+='<span class="bdg bdg-new">NEW</span>';
+    if(!c.live)bHTML+='<span class="bdg bdg-soon">'+(LANG==="hi"?"जल्द":"Soon")+'</span>';
+    bHTML+='</div>';
+    var foot='';
+    if(c.live){
+      foot='<div class="c-foot"><div class="c-price"><div class="c-p">₹'+c.price+'</div>'+
+        (c.originalPrice?'<div class="c-op">₹'+c.originalPrice+'</div>':'')+
+        '</div><button class="btn-buy" onclick="openPay(\''+c.id+'\')">'+t("buyNow")+'</button></div>';
+    } else {
+      foot='<div class="c-foot"><div class="c-soon-tag">'+t("comingSoon")+'</div>'+
+        '<div class="btn-soon">'+t("upcoming")+'</div></div>';
+    }
+    var thumbH=c.thumbnail?'<img src="'+c.thumbnail+'" alt="'+c.title+'" loading="lazy">':'<span class="c-em">'+c.emoji+'</span>';
+    return '<div class="c-card">'+
+      '<div class="c-thumb">'+thumbH+bHTML+'</div>'+
+      '<div class="c-body">'+
+      '<div class="c-cat">'+(c.category||"")+'</div>'+
+      '<div class="c-title">'+c.title+'</div>'+
+      '<div class="c-desc">'+(c.desc||"").substring(0,80)+'</div>'+
+      '<div class="c-meta"><span class="c-stars">'+stars+'</span>'+
+        (c.reviews?'<span class="c-rc">('+c.reviews.toLocaleString()+')</span>':'')+
+        (c.buyers?'<span class="c-buyers">👤 '+c.buyers+'</span>':'')+
+      '</div>'+foot+'</div></div>';
+  }).join('');
+}
+
+// ─── PAYMENT ───
+function openPay(id){openPay_orig(id);}
+
+// ─── COUPON ───
+var COUPON_APPLIED = false;
+var DISCOUNTED_PRICE = 0;
+
+function openPay_orig(id){
+  if(!CUR_USER){showLogin();return;}
+  CUR_COURSE=null;for(var i=0;i<ALL_CS.length;i++){if(ALL_CS[i].id===id){CUR_COURSE=ALL_CS[i];break;}}
+  if(!CUR_COURSE)return;
+  // Reset coupon
+  COUPON_APPLIED=false; DISCOUNTED_PRICE=0;
+  document.getElementById("couponInp").value="";
+  document.getElementById("couponMsg").textContent="";
+  document.getElementById("amtStrike").style.display="none";
+  document.getElementById("applyCouponBtn").textContent=LANG==="hi"?"लगाएं":"Apply";
+  // Set course info
+  document.getElementById("payEm").innerHTML=CUR_COURSE.emoji||"📚";
+  document.getElementById("payTitle").textContent=CUR_COURSE.title;
+  document.getElementById("payPrice").textContent="₹"+CUR_COURSE.price;
+  document.getElementById("payAmt").textContent="₹"+CUR_COURSE.price;
+  // ── DYNAMIC UPI QR — amount auto-fills when scanned ──
+  generateUPIQR(CUR_COURSE.price, CUR_COURSE.title);
+  document.getElementById("upiDisplay").textContent=UPI;
+  goPay(1);
+  document.getElementById("payOv").className="pay-ov show";
+}
+
+function applyCoupon(){
+  var code=document.getElementById("couponInp").value.trim().toUpperCase();
+  var msg=document.getElementById("couponMsg");
+  var strike=document.getElementById("amtStrike");
+  var amtEl=document.getElementById("payAmt");
+  var applyBtn=document.getElementById("applyCouponBtn");
+  if(!code){
+    msg.className="coupon-msg coupon-err";
+    msg.textContent=LANG==="hi"?"कोड डालें!":"Enter a code!";
+    return;
+  }
+  if(COUPON_APPLIED){
+    // Remove coupon
+    COUPON_APPLIED=false; DISCOUNTED_PRICE=0;
+    strike.style.display="none";
+    amtEl.textContent="₹"+CUR_COURSE.price;
+    msg.textContent="";
+    document.getElementById("couponInp").value="";
+    applyBtn.textContent=LANG==="hi"?"लगाएं":"Apply";
+    // Regenerate QR with original price
+    generateUPIQR(CUR_COURSE.price, CUR_COURSE.title);
+    return;
+  }
+  // Fetch all coupons and match by code field
+  xr("GET","/coupons.json",null,function(d,e){
+    if(e){
+      msg.className="coupon-msg coupon-err";
+      msg.textContent=LANG==="hi"?"❌ नेटवर्क error!":"❌ Network error!";
+      return;
+    }
+    // Find matching coupon
+    var found=null;
+    if(d){
+      var keys=Object.keys(d);
+      for(var i=0;i<keys.length;i++){
+        if(d[keys[i]].code&&d[keys[i]].code.toUpperCase()===code){
+          found=d[keys[i]];break;
+        }
+      }
+    }
+    if(!found){
+      msg.className="coupon-msg coupon-err";
+      msg.textContent=LANG==="hi"?"❌ गलत या expired कोड!":"❌ Invalid or expired code!";
+      return;
+    }
+    var orig=CUR_COURSE.price;
+    // Admin saves discount as percentage
+    var discPct=parseInt(found.discount)||0;
+    var disc=Math.round(orig*(discPct/100));
+    disc=Math.min(disc,orig-1); // minimum ₹1
+    var final=orig-disc;
+    COUPON_APPLIED=true;
+    DISCOUNTED_PRICE=final;
+    strike.style.display="block";
+    strike.textContent="₹"+orig;
+    amtEl.textContent="₹"+final;
+    applyBtn.textContent=LANG==="hi"?"हटाएं":"Remove";
+    msg.className="coupon-msg coupon-ok";
+    msg.textContent=LANG==="hi"?"✓ "+discPct+"% छूट मिली! ₹"+disc+" off":"✓ "+discPct+"% off applied! Saving ₹"+disc;
+    // Regenerate QR with discounted price
+    generateUPIQR(final, CUR_COURSE.title);
+  });
+}
+
+// ─── GENERATE UPI QR CODE ───
+function generateUPIQR(amount, courseName) {
+  var upiLink = "upi://pay?pa=" + encodeURIComponent(UPI)
+    + "&pn=" + encodeURIComponent("TechSumit")
+    + "&am=" + amount
+    + "&cu=INR"
+    + "&tn=" + encodeURIComponent((courseName || "Course").substring(0, 50));
+
+  var qrDiv = document.getElementById("payQR");
+  qrDiv.innerHTML = "";
+  qrDiv.style.display = "flex";
+  qrDiv.style.alignItems = "center";
+  qrDiv.style.justifyContent = "center";
+
+  try {
+    new QRCode(qrDiv, {
+      text: upiLink,
+      width: 158,
+      height: 158,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    document.getElementById("qrScanHint").style.display = "block";
+  } catch(e) {
+    // Fallback to static QR image if library fails
+    if(QR && QR.length > 100){
+      qrDiv.innerHTML = '<img src="'+QR+'" style="width:158px;height:158px;border-radius:8px;">';
+    }
+  }
+}
+
+function openPay_UNUSED(id){
+  if(!CUR_USER){showLogin();return;}
+  CUR_COURSE=null;for(var i=0;i<ALL_CS.length;i++){if(ALL_CS[i].id===id){CUR_COURSE=ALL_CS[i];break;}}
+  if(!CUR_COURSE)return;
+  document.getElementById("payEm").innerHTML=CUR_COURSE.emoji||"📚";
+  document.getElementById("payTitle").textContent=CUR_COURSE.title;
+  document.getElementById("payPrice").textContent="₹"+CUR_COURSE.price;
+  document.getElementById("payAmt").textContent="₹"+CUR_COURSE.price;
+  var qrImg=document.getElementById("payQR");
+  if(QR&&QR.length>100){qrImg.src=QR;qrImg.style.display="block";}
+  document.getElementById("upiDisplay").textContent=UPI;
+  goPay(1);
+  document.getElementById("payOv").className="pay-ov show";
+}
+function closePay(){
+  document.getElementById("payOv").className="pay-ov";
+  document.getElementById("codeInp").value="";
+  document.getElementById("codeErr").style.display="none";
+}
+function goPay(step){
+  [1,2,3,4].forEach(function(s){document.getElementById("ps"+s).className="p-sec"+(s===step?" on":"");});
+  [1,2,3].forEach(function(s){
+    document.getElementById("pd"+s).className="p-dot"+(s<step?" done":s===step?" on":"");
+    if(s<3)document.getElementById("pl"+s).className="p-line"+(s<step?" on":"");
+  });
+}
+function openWA(){
+  var msg=LANG==="hi"
+    ?"नमस्ते! मैंने TechSumit पर "+((CUR_COURSE&&CUR_COURSE.title)||"कोर्स")+" के लिए पेमेंट किया है। यह रहा मेरा screenshot।"
+    :"Hi! I made payment for "+((CUR_COURSE&&CUR_COURSE.title)||"a course")+" on TechSumit. Here is my screenshot.";
+  window.open("https://api.whatsapp.com/send?phone="+WA+"&text="+encodeURIComponent(msg),"_blank");
+}
+function cpUPI(){
+  var txt=document.getElementById("upiDisplay").textContent;
+  try{navigator.clipboard.writeText(txt).then(function(){toast("UPI ID copied!");});}
+  catch(e){var el=document.createElement("input");el.value=txt;document.body.appendChild(el);el.select();document.execCommand("copy");document.body.removeChild(el);toast("UPI ID copied!");}
+}
+
+// ─── CODE VERIFY ───
+var CH="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function hash(s){var h=0;for(var i=0;i<s.length;i++){h=Math.imul(31,h)+s.charCodeAt(i)|0;}return Math.abs(h);}
+function makeCode(sl){var sd=SEC+"|UNLOCK|"+sl;var h=hash(sd);var c="";for(var i=0;i<5;i++){c+=CH[h%CH.length];h=Math.floor(h/CH.length);if(h<CH.length)h=hash(sd+i);}return c;}
+function submitCode(){
+  var inp=document.getElementById("codeInp").value.toUpperCase().trim();
+  var err=document.getElementById("codeErr");err.style.display="none";
+  if(inp.length!==5){err.textContent=LANG==="hi"?"5 अक्षर का कोड डालें!":"Enter 5-letter code!";err.style.display="block";return;}
+  var slot=Math.floor(Date.now()/60000),valid=false;
+  for(var i=0;i<=3;i++){if(makeCode(slot-i)===inp){valid=true;break;}}
+  if(!valid){err.textContent=t("codeErr");err.style.display="block";return;}
+  if(!CUR_COURSE)return;
+  xr("PUT","/users/"+CUR_USER.phone+"/courses/"+CUR_COURSE.id+".json",
+    {purchasedAt:Date.now(),videoLink:CUR_COURSE.videoLink||"",paidPrice:COUPON_APPLIED?DISCOUNTED_PRICE:CUR_COURSE.price},
+    function(d,e){goPay(4);toast(LANG==="hi"?"कोर्स अनलॉक हो गया! 🎉":"Course unlocked! 🎉");}
+  );
+}
+
+// ─── REVIEWS ───
+var RND=(function(){var s=42;return function(){s=(s*1664525+1013904223)&0xffffffff;return(s>>>0)/0xffffffff;};})();
+function ri(a){return a[Math.floor(RND()*a.length)];}
+var RNAMES=["Arjun Singh","Priya Sharma","Rahul Kumar","Anjali Verma","Deepak Gupta","Neha Patel","Rohit Jaiswal","Sneha Mishra","Vikram Yadav","Pooja Tiwari","Amit Dubey","Kavya Nair","Suresh Mehta","Divya Soni","Mohit Chauhan","Ritika Bansal","Vishal Jain","Swati Agarwal","Manish Rawat","Preeti Pandey","Sanjay Bisht","Ritu Kapoor","Aakash Thakur","Shweta Tripathi","Nikhil Shukla","Manisha Rai"];
+var RCITIES=["Mumbai","Delhi","Jaipur","Lucknow","Pune","Hyderabad","Indore","Bhopal","Nagpur","Kanpur","Surat","Vadodara","Patna","Ranchi","Chandigarh","Dehradun","Amritsar","Jodhpur","Kota","Gwalior"];
+var RTEXTS=["Ekdum mast course hai! Maine seedha apply kar liya aur ab earning start ho gayi hai. Bahut recommend karunga!","Maine pehle bahut courses liye the but yeh bilkul alag hai — Hindi mein clearly explain kiya, practical examples ke saath. 10/10!","Sach mein bahut underpriced hai. Itne saste mein itna quality content pehle kabhi nahi dekha. Thank you TechSumit!","Ek mahine mein mera pehla client aa gaya Fiverr pe. Teacher ne sab step by step sikhaya hai. Kaafi helpful!","Video quality aur explanation dono top-notch hain. Screen recordings ke saath dekhaaya hai — bahut easy to understand.","First day se practical cheezein mili. Koi bhi boring theory nahi — sirf jo kaam aaye woh. Best investment!","Maine 3x ROI already recover kar liya. Highly recommend karta hoon especially beginners ke liye.","Is course ne meri thinking hi badal di. Online earning ki poori duniya khul gayi. Bahut grateful hoon!","Sabse best cheez hai ki teacher Hindi mein samjhate hain — koi confusion nahi. Superb content!","Bhai ekdum fire hai yeh course! Maine 2 hafte mein apna setup ready kar liya. Full paisa vasool!"];
+var RCOURSES=["Video Editing A to Z","AI Tools Masterclass","USA Automation Finance","YouTube Growth Blueprint","Freelancing Pro","Stock Market for Beginners","Digital Marketing Complete","Dropshipping Masterclass","Content Writing Pro","Instagram Growth Secrets"];
+var RBGS=["#ef4444","#f97316","#16a34a","#3b82f6","#8b5cf6","#ec4899","#0ea5e9","#d97706","#059669","#7c3aed","#db2777"];
+
+function seedRv(){
+  ALL_RV=[];
+  for(var i=0;i<120;i++){
+    var d=Math.floor(RND()*180)+1;
+    var t2=d===1?"1 day ago":d<7?d+" days ago":d<30?Math.floor(d/7)+" week"+(Math.floor(d/7)>1?"s":"")+" ago":Math.floor(d/30)+" month"+(Math.floor(d/30)>1?"s":"")+" ago";
+    ALL_RV.push({name:ri(RNAMES),city:ri(RCITIES),course:ri(RCOURSES),text:ri(RTEXTS),stars:RND()<0.7?5:4,time:t2,bg:RBGS[i%RBGS.length]});
+  }
+}
+
+function loadMoreRv(){
+  var g=document.getElementById("rvGrid");
+  if(RV_SHOWN===0){
+    g.innerHTML="";
+    xr("GET","/reviews.json",null,function(d){
+      if(d&&Object.keys(d).length>0){
+        var fbR=Object.keys(d).map(function(k){return d[k];});
+        fbR.sort(function(a,b){return(b.addedAt||0)-(a.addedAt||0);});
+        fbR.forEach(function(r){addRvCard(g,r);});
+      }
+      renderSeedRv();
+    });
+    return;
+  }
+  renderSeedRv();
+}
+function renderSeedRv(){
+  var g=document.getElementById("rvGrid");
+  ALL_RV.slice(RV_SHOWN,RV_SHOWN+18).forEach(function(r){addRvCard(g,r);});
+  RV_SHOWN+=18;
+}
+function addRvCard(g,r){
+  var d=document.createElement("div");d.className="rv-card";
+  var st="";for(var i=0;i<5;i++)st+=i<(r.stars||5)?"★":"☆";
+  d.innerHTML='<div class="rv-top"><div class="rv-av" style="background:'+r.bg+';">'+
+    (r.name||"S").charAt(0)+'</div><div><div class="rv-name">'+(r.name||"Student")+'</div>'+
+    '<div class="rv-meta">'+(r.city||"India")+" · "+(r.time||"Recently")+'</div></div></div>'+
+    '<div class="rv-course">🎬 '+(r.course||"")+'</div>'+
+    '<div class="rv-stars">'+st+'</div>'+
+    '<div class="rv-txt">'+(r.text||"")+'</div>';
+  g.appendChild(d);
+}
+
+// ─── XHR ───
+function xr(method,path,body,cb){
+  var req=new XMLHttpRequest();
+  req.open(method,DB+path,true);
+  req.setRequestHeader("Content-Type","application/json");
+  req.timeout=10000;
+  req.onload=function(){
+    var s=req.status;
+    if(s>=400){if(cb)cb(null,"Firebase error "+s);return;}
+    try{var d=JSON.parse(req.responseText);if(cb)cb(d,null);}
+    catch(e){if(cb)cb(null,"Parse error");}
+  };
+  req.onerror=function(){if(cb)cb(null,"Network error");};
+  req.ontimeout=function(){if(cb)cb(null,"Timeout");};
+  req.send(body!=null?JSON.stringify(body):null);
+}
+
+// ─── VIDEO PLAYER ───
+function getEmbedUrl(url){
+  if(!url)return "";
+  var yt=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+  if(yt)return "https://www.youtube.com/embed/"+yt[1]+"?autoplay=1&rel=0";
+  var vm=url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if(vm)return "https://player.vimeo.com/video/"+vm[1]+"?autoplay=1";
+  var gd=url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if(gd)return "https://drive.google.com/file/d/"+gd[1]+"/preview";
+  var gd2=url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
+  if(gd2)return "https://drive.google.com/file/d/"+gd2[1]+"/preview";
+  if(url.includes("/embed/")||url.includes("preview"))return url;
+  return "";
+}
+function openVid(courseId,title,videoUrl){
+  var embedUrl=getEmbedUrl(videoUrl);
+  document.getElementById("vidTitle").textContent=title||"Course Video";
+  var wrap=document.getElementById("vidWrap");
+  if(embedUrl){
+    wrap.innerHTML='<iframe src="'+embedUrl+'" allowfullscreen allow="autoplay;fullscreen;picture-in-picture" loading="lazy"></iframe>';
+  } else {
+    wrap.innerHTML='<div class="vid-no-link"><div class="vid-no-ico">🎬</div><div class="vid-no-txt">Video abhi available nahi hai.<br>Admin se contact karo.</div></div>';
+  }
+  document.getElementById("vidOv").className="vid-ov show";
+  document.body.style.overflow="hidden";
+}
+function closeVid(){
+  document.getElementById("vidOv").className="vid-ov";
+  document.getElementById("vidWrap").innerHTML="";
+  document.body.style.overflow="";
+}
+document.addEventListener("click",function(e){if(e.target.id==="vidOv")closeVid();});
+
+// ─── MATERIALS ───
+var MAT_ICONS={"drive":"☁️","mega":"💾","dropbox":"📦","youtube":"🎬","zip":"🗜️","rar":"🗜️","pdf":"📄","default":"📁"};
+function getMatIcon(url){
+  if(!url)return MAT_ICONS.default;
+  if(url.includes("drive.google"))return MAT_ICONS.drive;
+  if(url.includes("mega.nz"))return MAT_ICONS.mega;
+  if(url.includes("dropbox"))return MAT_ICONS.dropbox;
+  if(url.includes("youtube")||url.includes("youtu.be"))return MAT_ICONS.youtube;
+  if(url.match(/\.pdf$/i))return MAT_ICONS.pdf;
+  if(url.match(/\.zip$/i))return MAT_ICONS.zip;
+  if(url.match(/\.rar$/i))return MAT_ICONS.rar;
+  return MAT_ICONS.default;
+}
+function openMat(courseId){
+  var c=ALL_CS.find(function(x){return x.id===courseId;});
+  var mats=(c&&c.materials)||[];
+  var sub=document.getElementById("matSub");
+  if(sub)sub.textContent=(c?c.title:"")+" · "+mats.length+" file"+(mats.length!==1?"s":"");
+  var body=document.getElementById("matBody");
+  if(!mats.length){
+    body.innerHTML='<div class="mat-none">📦 Is course ke liye abhi koi materials nahi hain.<br>Jald upload kiye jaayenge!</div>';
+  } else {
+    body.innerHTML=mats.map(function(m){
+      var ico=getMatIcon(m.url);
+      return '<div class="mat-item">'+
+        '<div class="mat-item-ico">'+ico+'</div>'+
+        '<div class="mat-item-info">'+
+          '<div class="mat-item-name">'+(m.name||"File")+'</div>'+
+          '<div class="mat-item-link">'+(m.url||"")+'</div>'+
+        '</div>'+
+        '<a href="'+(m.url||"#")+'" target="_blank" class="mat-dl-btn">⬇️ Download</a>'+
+      '</div>';
+    }).join("");
+  }
+  document.getElementById("matOv").className="mat-ov show";
+}
+function closeMat(){document.getElementById("matOv").className="mat-ov";}
+document.addEventListener("click",function(e){if(e.target.id==="matOv")closeMat();});
+
+// ─── AI PROMPTS ───
+var CUR_PRMS=[];
+function openPrm(courseId){
+  var c=ALL_CS.find(function(x){return x.id===courseId;});
+  var prompts=(c&&c.prompts)||[];
+  CUR_PRMS=prompts;
+  var sub=document.getElementById("prmSub");
+  if(sub)sub.textContent=(c?c.title:"")+" · "+prompts.length+" prompt"+(prompts.length!==1?"s":"");
+  var body=document.getElementById("prmBody");
+  if(!prompts.length){
+    body.innerHTML='<div class="prm-none">🤖 Is course ke liye abhi prompts nahi hain.</div>';
+  } else {
+    body.innerHTML=prompts.map(function(p,i){
+      return '<div class="prm-item">'+
+        '<div class="prm-item-lbl"><div class="prm-num">'+(i+1)+'</div>'+(p.label||"Prompt "+(i+1))+'</div>'+
+        '<div class="prm-text">'+(p.text||"").replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</div>'+
+        '<button class="prm-cp" id="pc'+i+'" onclick="doCpPrm('+i+')">📋 Copy Prompt</button>'+
+      '</div>';
+    }).join("");
+  }
+  document.getElementById("prmOv").className="prm-ov show";
+}
+function doCpPrm(i){
+  var p=CUR_PRMS[i];if(!p||!p.text)return;
+  var btn=document.getElementById("pc"+i);
+  function ok(){
+    if(btn){btn.innerHTML="✅ Copied!";btn.classList.add("ok");
+      setTimeout(function(){btn.innerHTML="📋 Copy Prompt";btn.classList.remove("ok");},2500);}
+    toast(LANG==="hi"?"Prompt copy ho gaya! 🎉":"Prompt copied! 🎉");
+  }
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(p.text).then(ok).catch(function(){fbCp(p.text,ok);});
+  } else {fbCp(p.text,ok);}
+}
+function fbCp(txt,cb){
+  var el=document.createElement("textarea");el.value=txt;
+  el.style.cssText="position:fixed;opacity:0;top:0;left:0;";
+  document.body.appendChild(el);el.focus();el.select();
+  try{document.execCommand("copy");cb();}catch(e){toast("Copy manually!");}
+  document.body.removeChild(el);
+}
+function closePrm(){document.getElementById("prmOv").className="prm-ov";}
+document.addEventListener("click",function(e){if(e.target.id==="prmOv")closePrm();});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeVid();closeMat();closePrm();}});
+
+// ─── TOAST ───
+var tT;
+function toast(m){var el=document.getElementById("toast");el.textContent=m;el.style.display="block";clearTimeout(tT);tT=setTimeout(function(){el.style.display="none";},2800);}
+
+// ─── KEYBOARD ───
+document.getElementById("loginPin").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+document.getElementById("regPin").addEventListener("keydown",function(e){if(e.key==="Enter")doRegister();});
+document.getElementById("codeInp").addEventListener("keydown",function(e){if(e.key==="Enter")submitCode();});
+
+// ─── INIT ───
+seedRv();
+loadTheme();
+loadUser();
+loadCourses();
+loadMoreRv();
+</script>
+</body>
+</html>

@@ -271,26 +271,6 @@ body{font-family:var(--ff-body);background:var(--bg);color:var(--tx);font-size:1
 .ab-gr{background:rgba(16,185,129,.1);color:#34d399;}  .ab-gr:hover{background:rgba(16,185,129,.2);}
 .ab-sl{background:rgba(100,116,139,.08);color:var(--tx3);}.ab-sl:hover{background:rgba(100,116,139,.14);}
 
-/* ── THUMBNAIL UPLOAD ── */
-.thumb-wrap{border:2px dashed var(--ln2);border-radius:12px;cursor:pointer;
-  transition:.2s;position:relative;overflow:hidden;background:var(--s2);}
-.thumb-wrap:hover{border-color:rgba(249,115,22,.4);background:rgba(249,115,22,.03);}
-.thumb-wrap.has-img{border-style:solid;border-color:rgba(249,115,22,.3);}
-.thumb-ratio{width:100%;padding-bottom:56.25%;position:relative;}
-.thumb-inner{position:absolute;inset:0;display:flex;align-items:center;
-  justify-content:center;flex-direction:column;gap:5px;}
-.thumb-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  border-radius:10px;display:none;}
-.thumb-wrap.has-img .thumb-img{display:block;}
-.thumb-wrap.has-img .thumb-ph{display:none;}
-.thumb-ph{text-align:center;pointer-events:none;}
-.thumb-rm{position:absolute;top:7px;right:7px;width:26px;height:26px;
-  border-radius:7px;background:rgba(239,68,68,.88);border:none;color:#fff;
-  font-size:13px;cursor:pointer;display:none;align-items:center;
-  justify-content:center;z-index:3;font-family:var(--ff-body);}
-.thumb-wrap.has-img .thumb-rm{display:flex;}
-
-
 /* ─── CODE BOX (special treatment) ─── */
 .code-hero{border-radius:18px;padding:28px 20px;text-align:center;position:relative;overflow:hidden;
   background:linear-gradient(135deg,#1a0808,#1f0e0e);
@@ -975,27 +955,14 @@ body{font-family:var(--ff-body);background:var(--bg);color:var(--tx);font-size:1
       <div class="field"><label class="field-lbl">Enrolled (e.g. 3.2k)</label><input class="fi" id="cm-by" placeholder="3.2k"></div>
       <div class="field"><label class="field-lbl">Video Link</label><input class="fi" id="cm-vl" placeholder="https://vimeo.com/..."></div>
       <div class="field sp2">
-        <label class="field-lbl">Course Thumbnail <span style="color:var(--tx3);font-size:10px;">16:9 — gallery se upload karo</span></label>
-        <input type="file" id="cm-thumb-inp" accept="image/*" style="display:none;" onchange="handleThumb(this)">
-        <div class="thumb-wrap" id="cm-thumb-wrap" onclick="document.getElementById('cm-thumb-inp').click()">
-          <div class="thumb-ratio">
-            <div class="thumb-inner">
-              <img class="thumb-img" id="cm-thumb-img" src="" alt="">
-              <div class="thumb-ph">
-                <div style="font-size:28px;opacity:.4;margin-bottom:5px;">🖼️</div>
-                <div style="font-size:12px;font-weight:600;color:var(--tx2);">Click karke thumbnail upload karo</div>
-                <div style="font-size:10px;color:var(--tx3);margin-top:3px;">JPG · PNG · WEBP — koi bhi size</div>
-              </div>
-            </div>
-          </div>
-          <button class="thumb-rm" onclick="removeThumb(event)">✕</button>
-        </div>
-        <div id="cm-thumb-info" style="font-size:10px;color:var(--tx3);margin-top:5px;"></div>
-      </div>
-      <div class="field sp2">
         <label class="field-lbl">Course Prompts / Resources</label>
         <div id="promptsList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:10px;"></div>
         <button type="button" onclick="addPromptRow()" style="padding:8px 16px;background:rgba(59,130,246,.1);border:1.5px solid rgba(59,130,246,.2);color:#93c5fd;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;width:100%;">+ Add Prompt Section</button>
+      </div>
+      <div class="field sp2">
+        <label class="field-lbl">📦 Course Materials <span style="color:var(--tx3);font-size:10px;">— Editing packs, LUTs, templates, etc.</span></label>
+        <div id="matList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;"></div>
+        <button type="button" onclick="addMatRow()" style="padding:8px 16px;background:rgba(52,211,153,.08);border:1.5px solid rgba(52,211,153,.18);color:#34d399;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;width:100%;">+ Add Material / File Link</button>
       </div>
       <div class="field sp2">
         <div class="tg-row"><div class="tg" id="tg-live" onclick="tog('live')"></div><span class="tg-lbl">&#129001; Live — purchasable on website</span></div>
@@ -1079,7 +1046,6 @@ var COURSES=[],STUDENTS=[],REVIEWS=[],COUPONS=[];
 var EDIT_CID=null,EDIT_RID=null,ASSIGN_PH=null;
 var TV={live:false,hot:false,new:false};
 var MAINT=false,codeIv=null,FB_OK=false;
-var THUMB_B64="";
 
 // ── AUTH ──
 function doLogin(){
@@ -1197,7 +1163,7 @@ function openAddC(){
   EDIT_CID=null;document.getElementById("cm-t").textContent="Add New Course";
   ["cm-em","cm-cat","cm-ttl","cm-dsc","cm-pr","cm-op","cm-rt","cm-rc","cm-by","cm-vl"].forEach(function(id){document.getElementById(id).value="";});
   loadPromptsData([]);
-  resetThumb();
+  loadMatsData([]);
   TV={live:false,hot:false,new:false};updTog();
   document.getElementById("cmOv").className="ov show";
 }
@@ -1211,7 +1177,7 @@ function openEditC(id){
   document.getElementById("cm-rt").value=c.rating||""; document.getElementById("cm-rc").value=c.reviews||"";
   document.getElementById("cm-by").value=c.buyers||""; document.getElementById("cm-vl").value=c.videoLink||"";
   loadPromptsData(c.prompts||[]);
-  if(c.thumbnail){setThumbPreview(c.thumbnail,"Existing thumbnail");}else{resetThumb();}
+  loadMatsData(c.materials||[]);
   TV={live:!!c.live,hot:!!c.isHot,new:!!c.isNew};updTog();
   document.getElementById("cmOv").className="ov show";
 }
@@ -1220,55 +1186,12 @@ function saveC(){
   var data={emoji:vi("cm-em")||"&#128218;",category:vi("cm-cat"),title:title,desc:vi("cm-dsc"),
     price:parseFloat(vi("cm-pr"))||0,originalPrice:parseFloat(vi("cm-op"))||0,
     rating:parseFloat(vi("cm-rt"))||4.9,reviews:parseInt(vi("cm-rc"))||0,
-    buyers:vi("cm-by"),videoLink:vi("cm-vl"),prompts:getPromptsData(),live:TV.live,isHot:TV.hot,isNew:TV.new};
-  if(THUMB_B64) data.thumbnail=THUMB_B64;
+    buyers:vi("cm-by"),videoLink:vi("cm-vl"),prompts:getPromptsData(),materials:getMatsData(),live:TV.live,isHot:TV.hot,isNew:TV.new};
   xr(EDIT_CID?"PUT":"POST","/courses/"+(EDIT_CID||"")+".json",data,function(d,e){
     if(e){showErr("Save failed: "+e);return;}
     clM("cmOv");showOK(EDIT_CID?"Course updated!":"Course added!");loadCourses();loadDash();
   });
 }
-// ── THUMBNAIL ──
-function handleThumb(inp){
-  var file=inp.files[0];if(!file)return;
-  var info=document.getElementById("cm-thumb-info");
-  if(info)info.textContent="Processing...";
-  var img=new Image(),url=URL.createObjectURL(file);
-  img.onload=function(){
-    var tw=800,th=450,canvas=document.createElement("canvas");
-    var srcAR=img.width/img.height,tAR=tw/th;
-    var sx=0,sy=0,sw=img.width,sh=img.height;
-    if(srcAR>tAR){sw=Math.round(sh*tAR);sx=Math.round((img.width-sw)/2);}
-    else if(srcAR<tAR){sh=Math.round(sw/tAR);sy=Math.round((img.height-sh)/2);}
-    canvas.width=tw;canvas.height=th;
-    canvas.getContext("2d").drawImage(img,sx,sy,sw,sh,0,0,tw,th);
-    var b64=canvas.toDataURL("image/jpeg",0.82);
-    if(b64.length>700000)b64=canvas.toDataURL("image/jpeg",0.65);
-    if(b64.length>700000)b64=canvas.toDataURL("image/jpeg",0.5);
-    setThumbPreview(b64,file.name+" · "+Math.round(b64.length/1024)+"KB compressed");
-    URL.revokeObjectURL(url);inp.value="";
-  };
-  img.src=url;
-}
-function setThumbPreview(b64,label){
-  THUMB_B64=b64;
-  var wrap=document.getElementById("cm-thumb-wrap");
-  var img=document.getElementById("cm-thumb-img");
-  var info=document.getElementById("cm-thumb-info");
-  if(img)img.src=b64;
-  if(wrap)wrap.classList.add("has-img");
-  if(info)info.textContent="✅ "+label;
-}
-function resetThumb(){
-  THUMB_B64="";
-  var wrap=document.getElementById("cm-thumb-wrap");
-  var img=document.getElementById("cm-thumb-img");
-  var info=document.getElementById("cm-thumb-info");
-  if(wrap)wrap.classList.remove("has-img");
-  if(img)img.src="";
-  if(info)info.textContent="";
-}
-function removeThumb(e){e.stopPropagation();resetThumb();}
-
 function togLive(id,val){
   xr("PATCH","/courses/"+id+".json",{live:val},function(d,e){
     if(e){showErr(e);return;}showOK(val?"Course is Live!":"Unpublished!");loadCourses();
@@ -1502,6 +1425,33 @@ function loadPromptsData(prompts) {
   prompts.forEach(function(p) { addPromptRow(p.label, p.text); });
 }
 
+// ── MATERIALS ──
+function addMatRow(name, url) {
+  var list = document.getElementById('matList');
+  var row = document.createElement('div');
+  row.className = 'mat-row';
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;background:var(--s3);border:1px solid var(--ln);border-radius:10px;padding:10px;';
+  row.innerHTML =
+    '<input class="fi mat-name" placeholder="Material name (e.g. Editing Pack)" value="'+(name||'')+'" style="font-size:12px;">'+
+    '<input class="fi mat-url" placeholder="Link (Google Drive, Mega, etc.)" value="'+(url||'')+'" style="font-size:12px;">'+
+    '<button onclick="this.closest(\'.mat-row\').remove()" style="width:28px;height:28px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#fca5a5;border-radius:7px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>';
+  list.appendChild(row);
+}
+function getMatsData() {
+  var rows = document.getElementById('matList').querySelectorAll('.mat-row');
+  var mats = [];
+  rows.forEach(function(row) {
+    var n = row.querySelector('.mat-name').value.trim();
+    var u = row.querySelector('.mat-url').value.trim();
+    if(n || u) mats.push({name: n, url: u});
+  });
+  return mats;
+}
+function loadMatsData(mats) {
+  document.getElementById('matList').innerHTML = '';
+  if(!mats || !mats.length) return;
+  mats.forEach(function(m) { addMatRow(m.name, m.url); });
+}
 
 // ── THEME ──
 function toggleTheme(){
