@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ShieldVPN</title>
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22ShieldVPN%22%2C%22short_name%22%3A%22ShieldVPN%22%2C%22description%22%3A%22Your%20personal%20VPN%20app%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2307090f%22%2C%22theme_color%22%3A%22%2300e676%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%2520viewBox%3D%270%200%20512%20512%27%253E%253Crect%2520width%3D%27512%27%2520height%3D%27512%27%2520rx%3D%27100%27%2520fill%3D%27%2307090f%27%2F%253E%253Ctext%2520x%3D%27256%27%2520y%3D%27330%27%2520font-size%3D%27300%27%2520text-anchor%3D%27middle%27%253E%25F0%259F%2594%2590%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ShieldVPN">
+<meta name="theme-color" content="#00e676">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--panel:#0e1420;--card:#121b28;--border:#1a2d42;--green:#00e676;--green2:#69f0ae;--red:#ff4d6d;--blue:#40c4ff;--gold:#ffd740;--txt:#dceeff;--dim:#4a6580;--dim2:#2a3f55;--orange:#ff9800;--r:16px;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#000;display:flex;justify-content:center;align-items:center;overflow:hidden;}
+body{font-family:'Syne',sans-serif;}
+.phone{width:100%;max-width:420px;height:100svh;max-height:860px;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;}
+.orb{position:absolute;width:360px;height:360px;border-radius:50%;top:-120px;left:50%;transform:translateX(-50%);pointer-events:none;filter:blur(90px);opacity:.15;z-index:0;transition:background 1s,opacity 1s;}
+.orb.off{background:radial-gradient(circle,#1a3a5c,transparent);}
+.orb.ing{background:radial-gradient(circle,#ff6d00,#ff9800,transparent);animation:orbP .8s infinite alternate;opacity:.28;}
+.orb.on{background:radial-gradient(circle,#00e676,#00bcd4,transparent);animation:orbB 3s ease-in-out infinite;opacity:.22;}
+@keyframes orbP{from{transform:translateX(-50%) scale(.9)}to{transform:translateX(-50%) scale(1.1)}}
+@keyframes orbB{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.08)}}
+nav{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 18px 8px;}
+.logo{font-size:18px;font-weight:800;color:var(--txt);}.logo span{color:var(--green);}
+.tabs{display:flex;gap:4px;margin:0 14px 12px;background:var(--card);border-radius:14px;padding:4px;position:relative;z-index:10;}
+.tab{flex:1;text-align:center;padding:8px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .25s;color:var(--dim);touch-action:manipulation;}
+.tab.active{background:var(--panel);color:var(--txt);}
+.screen{display:none;flex:1;overflow-y:auto;padding:0 14px 80px;}
+.screen.active{display:flex;flex-direction:column;}
+.screen::-webkit-scrollbar{display:none;}
+.sbadge{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border);border-radius:99px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;margin:0 auto 16px;transition:all .5s;position:relative;z-index:10;}
+.bdot{width:8px;height:8px;border-radius:50%;background:var(--dim);transition:background .5s;flex-shrink:0;}
+.sbadge.on{border-color:rgba(0,230,118,.4);color:var(--green);}
+.sbadge.on .bdot{background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s infinite;}
+.sbadge.ing{border-color:rgba(255,152,0,.4);color:var(--orange);}
+.sbadge.ing .bdot{background:var(--orange);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.cwrap{display:flex;justify-content:center;align-items:center;position:relative;margin:6px 0 20px;z-index:10;}
+.ring{position:absolute;border-radius:50%;border:1.5px solid var(--border);opacity:.25;pointer-events:none;animation:spin 10s linear infinite;transition:border-color .8s,opacity .8s;}
+.ring:nth-child(1){width:200px;height:200px;}
+.ring:nth-child(2){width:228px;height:228px;animation-direction:reverse;animation-duration:14s;}
+.ring:nth-child(3){width:256px;height:256px;animation-duration:22s;}
+.ring.on{border-color:rgba(0,230,118,.4);opacity:.5;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cbtn{width:156px;height:156px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;position:relative;border:2px solid var(--border);background:radial-gradient(circle at 40% 35%,#1a2d42,var(--panel));transition:all .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 40px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);touch-action:manipulation;user-select:none;}
+.cbtn:active{transform:scale(.93);}
+.cbtn.on{border-color:rgba(0,230,118,.6);box-shadow:0 0 60px rgba(0,230,118,.25),0 0 120px rgba(0,230,118,.1);}
+.cbtn.ing{border-color:rgba(255,152,0,.6);animation:cpulse .7s ease-in-out infinite alternate;}
+@keyframes cpulse{from{box-shadow:0 0 20px rgba(255,152,0,.2)}to{box-shadow:0 0 80px rgba(255,152,0,.5)}}
+.bico{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--dim2);transition:background .4s;}
+.cbtn.on .bico{background:rgba(0,230,118,.15);}
+.cbtn.ing .bico{background:rgba(255,152,0,.15);}
+.blbl{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim);transition:color .4s;}
+.cbtn.on .blbl{color:var(--green);}
+.cbtn.ing .blbl{color:var(--orange);}
+.ipcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:relative;z-index:10;overflow:hidden;}
+.ipcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dim2);transition:background .5s;border-radius:3px 0 0 3px;}
+.ipcard.on::before{background:linear-gradient(180deg,var(--green),var(--blue));}
+.iplbl{font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;}
+.ipv{font-family:'DM Mono',monospace;font-size:14px;color:var(--txt);margin-top:3px;transition:color .5s;}
+.ipcard.on .ipv{color:var(--green2);}
+.ipbadge{font-size:10px;padding:4px 10px;border-radius:99px;background:rgba(255,77,109,.15);color:var(--red);border:1px solid rgba(255,77,109,.3);font-weight:700;letter-spacing:1px;transition:all .5s;flex-shrink:0;}
+.ipbadge.on{background:rgba(0,230,118,.12);color:var(--green);border-color:rgba(0,230,118,.3);}
+.srow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;position:relative;z-index:10;}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 8px;text-align:center;transition:border-color .5s;}
+.scard.on{border-color:rgba(0,230,118,.2);}
+.sico{font-size:16px;margin-bottom:3px;}.sv{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--txt);}.sl{font-size:9px;color:var(--dim);letter-spacing:1px;margin-top:2px;}
+.svrcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s;position:relative;z-index:10;touch-action:manipulation;}
+.svrcard:active{border-color:var(--blue);}
+.sflag{font-size:28px;}.sname{font-size:14px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.smeta{font-size:11px;color:var(--dim);margin-top:2px;}.sspd{font-family:'DM Mono',monospace;font-size:12px;color:var(--green);flex-shrink:0;}.chev{color:var(--dim);font-size:20px;flex-shrink:0;}
+.timer{text-align:center;margin-top:12px;font-family:'DM Mono',monospace;font-size:13px;color:var(--dim);letter-spacing:3px;position:relative;z-index:10;}
+.srchbox{position:relative;margin-bottom:10px;}
+.srchbox input{width:100%;background:var(--card);border:1px solid var(--border);color:var(--txt);padding:11px 14px 11px 38px;border-radius:12px;font-family:'Syne',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.srchbox input:focus{border-color:var(--blue);}
+.srchbox input::placeholder{color:var(--dim);}
+.sico2{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;}
+.pills{display:flex;gap:7px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none;padding-bottom:2px;}
+.pills::-webkit-scrollbar{display:none;}
+.pill{flex-shrink:0;padding:6px 14px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.5px;background:var(--card);border:1px solid var(--border);color:var(--dim);cursor:pointer;transition:all .2s;touch-action:manipulation;}
+.pill.active{background:rgba(64,196,255,.1);border-color:var(--blue);color:var(--blue);}
+.clist{display:flex;flex-direction:column;gap:6px;}
+.ci{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .15s;touch-action:manipulation;}
+.ci:active{background:#0f1e2e;border-color:var(--blue);}
+.ci.sel{border-color:var(--green);background:rgba(0,230,118,.05);}
+.ciflag{font-size:22px;flex-shrink:0;}.cin{font-size:13px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.cir{font-size:10px;color:var(--dim);letter-spacing:1px;margin-top:1px;}.cirt{text-align:right;flex-shrink:0;}.cidl{font-family:'DM Mono',monospace;font-size:12px;}.cipg{font-size:10px;color:var(--dim);margin-top:1px;}
+.gbadge{font-size:9px;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:1px;flex-shrink:0;}
+.gS{color:#00e676;border:1px solid rgba(0,230,118,.4);background:rgba(0,230,118,.08);}
+.gA{color:#40c4ff;border:1px solid rgba(64,196,255,.4);background:rgba(64,196,255,.08);}
+.gB{color:#ffd740;border:1px solid rgba(255,215,64,.4);background:rgba(255,215,64,.08);}
+.gC{color:#ff9800;border:1px solid rgba(255,152,0,.4);background:rgba(255,152,0,.08);}
+.gD{color:#ff4d6d;border:1px solid rgba(255,77,109,.4);background:rgba(255,77,109,.08);}
+.chk{color:var(--green);font-size:15px;flex-shrink:0;}
+.secttl{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin:14px 0 8px;}
+.bigstat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;gap:14px;align-items:center;margin-bottom:10px;}
+.bsico{font-size:28px;}.bsval{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--txt);}.bslbl{font-size:10px;color:var(--dim);letter-spacing:1px;margin-top:2px;}
+.mstats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.ms{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.msico{font-size:20px;margin-bottom:4px;}.msval{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--txt);}.mslbl{font-size:10px;color:var(--dim);letter-spacing:1px;margin-top:2px;}
+.spdcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;}
+.spdrow{margin-bottom:12px;}.spdtop{display:flex;justify-content:space-between;margin-bottom:6px;}.spdlbl{font-size:11px;color:var(--dim);letter-spacing:1px;}.spdval{font-family:'DM Mono',monospace;font-size:13px;}
+.sbar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}.sfill{height:100%;border-radius:2px;transition:width 1.2s ease;}
+.protocard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:12px;}
+.prow{display:flex;align-items:center;justify-content:space-between;}.pname{font-size:13px;font-weight:600;color:var(--txt);}.pval{font-size:10px;color:var(--dim);margin-top:1px;}.pact{color:var(--green);font-size:11px;font-weight:700;}
+.div{height:1px;background:var(--border);}
+.tog{width:40px;height:22px;border-radius:11px;background:var(--border);position:relative;cursor:pointer;transition:background .3s;flex-shrink:0;touch-action:manipulation;}
+.tog.on{background:rgba(0,230,118,.5);}
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .3s;}
+.tog.on::after{transform:translateX(18px);}
+.loader{position:absolute;inset:0;z-index:100;background:rgba(7,9,15,.88);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(6px);}
+.loader.show{display:flex;}
+.lring{width:60px;height:60px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--orange);animation:spinR .8s linear infinite;}
+@keyframes spinR{to{transform:rotate(360deg)}}
+.ltxt{font-family:'DM Mono',monospace;font-size:12px;color:var(--orange);letter-spacing:2px;font-weight:700;}
+.toast{position:absolute;top:72px;left:14px;right:14px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;font-size:13px;z-index:200;transform:translateY(-16px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{border-color:rgba(0,230,118,.4);}
+.toast.err{border-color:rgba(255,77,109,.4);}
+.bnav{display:flex;background:var(--panel);border-top:1px solid var(--border);padding:10px 0 max(10px,env(safe-area-inset-bottom));position:relative;z-index:10;}
+.bi{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 0;transition:all .2s;touch-action:manipulation;}
+.biico{font-size:20px;filter:grayscale(1) opacity(.35);transition:filter .2s;}
+.bilbl{font-size:9px;letter-spacing:1px;color:var(--dim);font-weight:700;transition:color .2s;}
+.bi.active .biico{filter:none;}
+.bi.active .bilbl{color:var(--green);}
+</style>
+</head>
+<body>
+<style>
+#INSTALL_BANNER{display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0e1420;border-top:1px solid rgba(0,230,118,0.3);padding:14px 16px;align-items:center;gap:12px;font-family:'Syne',sans-serif;}
+#INSTALL_BTN{flex:1;background:linear-gradient(135deg,#00e676,#00bcd4);color:#07090f;border:none;border-radius:10px;padding:10px 16px;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;cursor:pointer;}
+#INSTALL_CLOSE{background:none;border:none;color:#4a6580;font-size:20px;cursor:pointer;padding:4px;}
+</style>
+<div id="INSTALL_BANNER">
+  <div style="font-size:28px">🛡️</div>
+  <div style="flex:1"><div style="color:#dceeff;font-size:13px;font-weight:700">Install ShieldVPN</div><div style="color:#4a6580;font-size:11px;margin-top:2px">Add to home screen as an app</div></div>
+  <button id="INSTALL_BTN">INSTALL</button>
+  <button id="INSTALL_CLOSE">✕</button>
+</div>
+<div class="phone" id="app">
+  <div class="orb off" id="ORB"></div>
+  <div class="toast" id="TOAST"><span id="TICO">✅</span><span id="TMSG">Connected!</span></div>
+  <div class="loader" id="LOADER"><div class="lring"></div><div class="ltxt" id="LTXT">CONNECTING...</div></div>
+
+  <nav>
+    <div class="logo">Shield<span>VPN</span></div>
+    <div style="display:flex;gap:8px;">
+      <div onclick="showTab(2)" style="width:36px;height:36px;border-radius:10px;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;touch-action:manipulation;">⚙️</div>
+    </div>
+  </nav>
+
+  <div class="tabs">
+    <div class="tab active" id="TAB0" onclick="showTab(0)">Connect</div>
+    <div class="tab" id="TAB1" onclick="showTab(1)">Servers</div>
+    <div class="tab" id="TAB2" onclick="showTab(2)">Stats</div>
+  </div>
+
+  <!-- CONNECT -->
+  <div class="screen active" id="SCR0">
+    <div class="sbadge off" id="SBADGE"><div class="bdot" id="BDOT"></div><span id="STXT">NOT PROTECTED</span></div>
+    <div class="cwrap">
+      <div class="ring" id="RNG1"></div><div class="ring" id="RNG2"></div><div class="ring" id="RNG3"></div>
+      <div class="cbtn" id="CBTN" onclick="toggleConnect()">
+        <div class="bico" id="BICO">🔒</div>
+        <div class="blbl" id="BLBL">TAP TO CONNECT</div>
+      </div>
+    </div>
+    <div class="ipcard" id="IPCARD">
+      <div><div class="iplbl">Your IP Address</div><div class="ipv" id="IPV">––.––.––.––</div></div>
+      <div class="ipbadge" id="IPBADGE">EXPOSED</div>
+    </div>
+    <div class="srow">
+      <div class="scard" id="SC0"><div class="sico">⬇️</div><div class="sv" id="DLV">–</div><div class="sl">DOWNLOAD</div></div>
+      <div class="scard" id="SC1"><div class="sico">⬆️</div><div class="sv" id="ULV">–</div><div class="sl">UPLOAD</div></div>
+      <div class="scard" id="SC2"><div class="sico">📶</div><div class="sv" id="PGV">–</div><div class="sl">PING</div></div>
+    </div>
+    <div class="svrcard" id="SVRCARD" onclick="showTab(1)">
+      <div class="sflag" id="SFLAG">🌐</div>
+      <div style="flex:1;min-width:0;"><div class="sname" id="SNAME">Select a Server</div><div class="smeta" id="SMETA">Tap to choose location</div></div>
+      <div class="sspd" id="SSPD"></div>
+      <div class="chev">›</div>
+    </div>
+    <div class="timer" id="TIMER">00:00:00</div>
+  </div>
+
+  <!-- SERVERS -->
+  <div class="screen" id="SCR1">
+    <div class="srchbox">
+      <span class="sico2">🔍</span>
+      <input type="text" id="SRCH" placeholder="Search country..." oninput="renderList()">
+    </div>
+    <div class="pills" id="PILLS"></div>
+    <div class="clist" id="CLIST"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="screen" id="SCR2">
+    <div class="secttl">Session Overview</div>
+    <div class="bigstat"><div class="bsico">⏱️</div><div><div class="bsval" id="STIME">00:00:00</div><div class="bslbl">SESSION DURATION</div></div></div>
+    <div class="mstats">
+      <div class="ms"><div class="msico">⬇️</div><div class="msval" id="SDL">0 MB</div><div class="mslbl">RECEIVED</div></div>
+      <div class="ms"><div class="msico">⬆️</div><div class="msval" id="SUL">0 MB</div><div class="mslbl">SENT</div></div>
+    </div>
+    <div class="secttl">Connection Speed</div>
+    <div class="spdcard">
+      <div class="spdrow">
+        <div class="spdtop"><span class="spdlbl">DOWNLOAD</span><span class="spdval" id="SDLV" style="color:var(--green)">– Mbps</span></div>
+        <div class="sbar"><div class="sfill" id="BARDL" style="width:0%;background:linear-gradient(90deg,var(--green),var(--blue))"></div></div>
+      </div>
+      <div class="spdrow" style="margin-bottom:0">
+        <div class="spdtop"><span class="spdlbl">UPLOAD</span><span class="spdval" id="SULV" style="color:var(--blue)">– Mbps</span></div>
+        <div class="sbar"><div class="sfill" id="BARUL" style="width:0%;background:linear-gradient(90deg,var(--blue),#7c4dff)"></div></div>
+      </div>
+    </div>
+    <div class="secttl">Protocol Settings</div>
+    <div class="protocard">
+      <div class="prow"><div><div class="pname">WireGuard</div><div class="pval">Ultra-fast modern protocol</div></div><div class="pact">ACTIVE ✓</div></div>
+      <div class="div"></div>
+      <div class="prow"><div><div class="pname">Kill Switch</div><div class="pval">Block if VPN drops</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="prow"><div><div class="pname">DNS Leak Protection</div><div class="pval">Prevent DNS exposure</div></div><div class="tog on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="prow"><div><div class="pname">Auto-Connect</div><div class="pval">Connect on app open</div></div><div class="tog" onclick="this.classList.toggle('on')"></div></div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <div class="bi active" id="BN0" onclick="showTab(0)"><div class="biico">🔐</div><div class="bilbl">PROTECT</div></div>
+    <div class="bi" id="BN1" onclick="showTab(1)"><div class="biico">🌍</div><div class="bilbl">SERVERS</div></div>
+    <div class="bi" id="BN2" onclick="showTab(2)"><div class="biico">📊</div><div class="bilbl">STATS</div></div>
+  </div>
+</div>
+
+<script>
+var C=[
+  {f:'🇸🇬',n:'Singapore',r:'Asia',dl:292.4,ul:248.6,p:3},
+  {f:'🇭🇰',n:'Hong Kong',r:'Asia',dl:274.1,ul:228.3,p:4},
+  {f:'🇰🇷',n:'South Korea',r:'Asia',dl:262.3,ul:218.7,p:4},
+  {f:'🇨🇭',n:'Switzerland',r:'Europe',dl:258.4,ul:196.8,p:4},
+  {f:'🇦🇪',n:'UAE',r:'Asia',dl:238.5,ul:130.2,p:5},
+  {f:'🇩🇰',n:'Denmark',r:'Europe',dl:248.6,ul:188.4,p:4},
+  {f:'🇷🇴',n:'Romania',r:'Europe',dl:244.8,ul:182.4,p:5},
+  {f:'🇸🇪',n:'Sweden',r:'Europe',dl:236.8,ul:174.2,p:5},
+  {f:'🇺🇸',n:'United States',r:'Americas',dl:224.8,ul:158.4,p:6},
+  {f:'🇧🇪',n:'Belgium',r:'Europe',dl:228.4,ul:168.3,p:5},
+  {f:'🇳🇱',n:'Netherlands',r:'Europe',dl:222.6,ul:162.8,p:5},
+  {f:'🇳🇴',n:'Norway',r:'Europe',dl:218.4,ul:158.6,p:6},
+  {f:'🇹🇼',n:'Taiwan',r:'Asia',dl:218.6,ul:177.9,p:5},
+  {f:'🇶🇦',n:'Qatar',r:'Asia',dl:196.3,ul:112.4,p:7},
+  {f:'🇫🇮',n:'Finland',r:'Europe',dl:208.3,ul:148.4,p:6},
+  {f:'🇨🇦',n:'Canada',r:'Americas',dl:198.4,ul:138.6,p:8},
+  {f:'🇫🇷',n:'France',r:'Europe',dl:198.6,ul:138.4,p:7},
+  {f:'🇩🇪',n:'Germany',r:'Europe',dl:194.8,ul:134.6,p:7},
+  {f:'🇮🇸',n:'Iceland',r:'Europe',dl:182.6,ul:126.4,p:8},
+  {f:'🇬🇧',n:'UK',r:'Europe',dl:182.4,ul:124.8,p:8},
+  {f:'🇮🇱',n:'Israel',r:'Asia',dl:178.9,ul:118.4,p:8},
+  {f:'🇸🇦',n:'Saudi Arabia',r:'Asia',dl:174.6,ul:96.8,p:8},
+  {f:'🇪🇸',n:'Spain',r:'Europe',dl:174.8,ul:114.6,p:9},
+  {f:'🇯🇵',n:'Japan',r:'Asia',dl:168.4,ul:131.5,p:6},
+  {f:'🇮🇪',n:'Ireland',r:'Europe',dl:168.8,ul:110.6,p:9},
+  {f:'🇧🇭',n:'Bahrain',r:'Asia',dl:162.4,ul:92.3,p:9},
+  {f:'🇨🇿',n:'Czech Rep.',r:'Europe',dl:158.4,ul:98.6,p:10},
+  {f:'🇳🇿',n:'New Zealand',r:'Oceania',dl:148.6,ul:92.4,p:12},
+  {f:'🇵🇱',n:'Poland',r:'Europe',dl:148.6,ul:92.4,p:11},
+  {f:'🇨🇳',n:'China',r:'Asia',dl:145.8,ul:99.4,p:12},
+  {f:'🇦🇺',n:'Australia',r:'Oceania',dl:102.4,ul:62.6,p:18},
+  {f:'🇧🇷',n:'Brazil',r:'Americas',dl:104.6,ul:64.8,p:16},
+  {f:'🇲🇾',n:'Malaysia',r:'Asia',dl:120.4,ul:78.5,p:14},
+  {f:'🇹🇭',n:'Thailand',r:'Asia',dl:94.7,ul:56.3,p:18},
+  {f:'🇷🇺',n:'Russia',r:'Europe',dl:88.6,ul:54.8,p:18},
+  {f:'🇲🇽',n:'Mexico',r:'Americas',dl:78.4,ul:48.6,p:22},
+  {f:'🇻🇳',n:'Vietnam',r:'Asia',dl:76.3,ul:52.1,p:16},
+  {f:'🇵🇭',n:'Philippines',r:'Asia',dl:55.9,ul:36.8,p:22},
+  {f:'🇮🇳',n:'India',r:'Asia',dl:62.8,ul:42.3,p:24},
+  {f:'🇮🇳',n:'India (Mumbai)',r:'Asia',dl:58.4,ul:38.2,p:22},
+  {f:'🇿🇦',n:'South Africa',r:'Africa',dl:62.4,ul:38.6,p:28},
+  {f:'🇪🇬',n:'Egypt',r:'Africa',dl:42.6,ul:26.8,p:36},
+  {f:'🇳🇬',n:'Nigeria',r:'Africa',dl:24.8,ul:14.4,p:52},
+  {f:'🇰🇪',n:'Kenya',r:'Africa',dl:34.8,ul:21.6,p:42},
+  {f:'🇮🇩',n:'Indonesia',r:'Asia',dl:48.2,ul:30.1,p:28},
+  {f:'🇵🇰',n:'Pakistan',r:'Asia',dl:22.4,ul:14.6,p:48},
+  {f:'🇧🇩',n:'Bangladesh',r:'Asia',dl:18.7,ul:11.2,p:54},
+  {f:'🇫🇯',n:'Fiji',r:'Oceania',dl:18.4,ul:10.6,p:68}
+];
+
+var connected=false,busy=false,selIdx=0;
+var tiv=null,div=null,sDl=0,sUl=0,sStart=null;
+var aReg='All';
+var realIP=(function(){return (Math.floor(Math.random()*200)+20)+'.'+Math.floor(Math.random()*255)+'.'+Math.floor(Math.random()*255)+'.'+(Math.floor(Math.random()*253)+1);})();
+
+function vpnIP(){return '10.'+(Math.floor(Math.random()*254)+1)+'.'+(Math.floor(Math.random()*254)+1)+'.'+(Math.floor(Math.random()*253)+1);}
+function pad(n){return ('0'+n).slice(-2);}
+function fmtT(s){return pad(Math.floor(s/3600))+':'+pad(Math.floor((s%3600)/60))+':'+pad(s%60);}
+function fmtD(mb){return mb>=1000?(mb/1000).toFixed(2)+' GB':mb.toFixed(1)+' MB';}
+function grade(d){return d>=200?'S':d>=150?'A':d>=80?'B':d>=30?'C':'D';}
+function dlCol(d){return d>=200?'var(--green)':d>=150?'var(--blue)':d>=80?'var(--gold)':'var(--orange)';}
+
+function toast(msg,ico,type){
+  var t=document.getElementById('TOAST');
+  document.getElementById('TICO').textContent=ico;
+  document.getElementById('TMSG').textContent=msg;
+  t.className='toast '+(type||'ok');
+  void t.offsetWidth;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3000);
+}
+
+function showTab(i){
+  for(var x=0;x<3;x++){
+    document.getElementById('SCR'+x).classList[x===i?'add':'remove']('active');
+    document.getElementById('TAB'+x).classList[x===i?'add':'remove']('active');
+    document.getElementById('BN'+x).classList[x===i?'add':'remove']('active');
+  }
+  if(i===1) renderList();
+}
+
+function toggleConnect(){
+  if(busy) return;
+  connected?disconnect():startConnect();
+}
+
+function startConnect(){
+  busy=true;
+  document.getElementById('CBTN').className='cbtn ing';
+  document.getElementById('ORB').className='orb ing';
+  document.getElementById('BLBL').textContent='CONNECTING';
+  document.getElementById('STXT').textContent='CONNECTING...';
+  document.getElementById('SBADGE').className='sbadge ing';
+  document.getElementById('LOADER').classList.add('show');
+  var steps=['ROUTING...','ENCRYPTING...','HANDSHAKE...','CONNECTED!'];
+  var si=0;
+  document.getElementById('LTXT').textContent=steps[0];
+  var iv=setInterval(function(){
+    si++;
+    if(si<steps.length){document.getElementById('LTXT').textContent=steps[si];}
+    else{clearInterval(iv);document.getElementById('LOADER').classList.remove('show');onConnected();}
+  },700);
+}
+
+function onConnected(){
+  connected=true;busy=false;
+  var c=C[selIdx];
+  document.getElementById('CBTN').className='cbtn on';
+  document.getElementById('BICO').textContent='🔓';
+  document.getElementById('BLBL').textContent='CONNECTED';
+  document.getElementById('ORB').className='orb on';
+  document.getElementById('SBADGE').className='sbadge on';
+  document.getElementById('STXT').textContent='PROTECTED';
+  document.getElementById('IPV').textContent=vpnIP();
+  document.getElementById('IPCARD').classList.add('on');
+  document.getElementById('IPBADGE').textContent='SECURED';
+  document.getElementById('IPBADGE').classList.add('on');
+  var dl=(c.dl*(0.88+Math.random()*.12)).toFixed(1);
+  var ul=(c.ul*(0.88+Math.random()*.12)).toFixed(1);
+  document.getElementById('DLV').textContent=dl+' Mbps';
+  document.getElementById('ULV').textContent=ul+' Mbps';
+  document.getElementById('PGV').textContent=c.p+' ms';
+  for(var x=0;x<3;x++){document.getElementById('SC'+x).classList.add('on');}
+  document.getElementById('RNG1').classList.add('on');
+  document.getElementById('RNG2').classList.add('on');
+  document.getElementById('RNG3').classList.add('on');
+  document.getElementById('SDLV').textContent=dl+' Mbps';
+  document.getElementById('SULV').textContent=ul+' Mbps';
+  document.getElementById('BARDL').style.width=Math.min(100,(dl/300)*100)+'%';
+  document.getElementById('BARUL').style.width=Math.min(100,(ul/300)*100)+'%';
+  sStart=Date.now();sDl=0;sUl=0;
+  tiv=setInterval(function(){
+    var s=Math.floor((Date.now()-sStart)/1000);
+    var t=fmtT(s);
+    document.getElementById('TIMER').textContent=t;
+    document.getElementById('STIME').textContent=t;
+  },1000);
+  div=setInterval(function(){
+    sDl+=parseFloat(dl)*0.002*(0.7+Math.random()*.6);
+    sUl+=parseFloat(ul)*0.002*(0.5+Math.random()*.7);
+    document.getElementById('SDL').textContent=fmtD(sDl);
+    document.getElementById('SUL').textContent=fmtD(sUl);
+  },1000);
+  toast(c.f+' '+c.n+' Connected','🛡️','ok');
+}
+
+function disconnect(){
+  connected=false;busy=false;
+  clearInterval(tiv);clearInterval(div);
+  document.getElementById('CBTN').className='cbtn';
+  document.getElementById('BICO').textContent='🔒';
+  document.getElementById('BLBL').textContent='TAP TO CONNECT';
+  document.getElementById('ORB').className='orb off';
+  document.getElementById('SBADGE').className='sbadge off';
+  document.getElementById('STXT').textContent='NOT PROTECTED';
+  document.getElementById('IPV').textContent=realIP;
+  document.getElementById('IPCARD').classList.remove('on');
+  document.getElementById('IPBADGE').textContent='EXPOSED';
+  document.getElementById('IPBADGE').classList.remove('on');
+  for(var x=0;x<3;x++){document.getElementById('SC'+x).classList.remove('on');}
+  document.getElementById('RNG1').classList.remove('on');
+  document.getElementById('RNG2').classList.remove('on');
+  document.getElementById('RNG3').classList.remove('on');
+  document.getElementById('DLV').textContent='–';
+  document.getElementById('ULV').textContent='–';
+  document.getElementById('PGV').textContent='–';
+  document.getElementById('BARDL').style.width='0%';
+  document.getElementById('BARUL').style.width='0%';
+  document.getElementById('SDLV').textContent='– Mbps';
+  document.getElementById('SULV').textContent='– Mbps';
+  toast('VPN Disconnected','🔴','err');
+}
+
+function selectIdx(i){
+  var wasOn=connected;
+  if(connected) disconnect();
+  selIdx=i;
+  var c=C[i];
+  document.getElementById('SFLAG').textContent=c.f;
+  document.getElementById('SNAME').textContent=c.n;
+  document.getElementById('SMETA').textContent=c.r+' · '+c.p+'ms';
+  document.getElementById('SSPD').textContent=c.dl+' Mbps';
+  showTab(0);
+  if(wasOn) setTimeout(startConnect,500);
+  else toast(c.f+' '+c.n+' Selected','📍','ok');
+}
+
+function renderList(){
+  var q=document.getElementById('SRCH').value.toLowerCase();
+  var data=[];
+  for(var i=0;i<C.length;i++){
+    var c=C[i];
+    if((aReg==='All'||c.r===aReg)&&(!q||c.n.toLowerCase().indexOf(q)>=0||c.r.toLowerCase().indexOf(q)>=0)){
+      data.push(i);
+    }
+  }
+  data.sort(function(a,b){return C[b].dl-C[a].dl;});
+  var g={'S':'gS','A':'gA','B':'gB','C':'gC','D':'gD'};
+  var h='';
+  for(var j=0;j<data.length;j++){
+    var i=data[j];var c=C[i];
+    var gr=grade(c.dl);var sel=i===selIdx;var col=dlCol(c.dl);
+    h+='<div class="ci'+(sel?' sel':'')+'" onclick="selectIdx('+i+')">'
+      +'<div class="ciflag">'+c.f+'</div>'
+      +'<div style="flex:1;min-width:0;"><div class="cin">'+c.n+'</div><div class="cir">'+c.r+'</div></div>'
+      +'<div class="cirt"><div class="cidl" style="color:'+col+'">'+c.dl+' Mbps</div><div class="cipg">'+c.p+'ms</div></div>'
+      +'<span class="gbadge '+g[gr]+'">'+gr+'</span>'
+      +(sel?'<span class="chk">✓</span>':'')
+      +'</div>';
+  }
+  if(!h) h='<div style="text-align:center;padding:50px;color:var(--dim);font-size:12px;letter-spacing:2px;">NO RESULTS</div>';
+  document.getElementById('CLIST').innerHTML=h;
+}
+
+function renderPills(){
+  var regs=['All','Asia','Europe','Americas','Africa','Oceania'];
+  var h='';
+  for(var i=0;i<regs.length;i++){
+    var r=regs[i];
+    h+='<div class="pill'+(r===aReg?' active':'')+'" onclick="setReg(\''+r+'\')">'+r+'</div>';
+  }
+  document.getElementById('PILLS').innerHTML=h;
+}
+function setReg(r){aReg=r;renderPills();renderList();}
+
+// PWA Install
+var deferredPrompt=null;
+var installBanner=document.getElementById('INSTALL_BANNER');
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();
+  deferredPrompt=e;
+  installBanner.style.display='flex';
+});
+document.getElementById('INSTALL_BTN').addEventListener('click',function(){
+  installBanner.style.display='none';
+  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;});}
+});
+document.getElementById('INSTALL_CLOSE').addEventListener('click',function(){
+  installBanner.style.display='none';
+});
+if('serviceWorker' in navigator){
+  var swCode="self.addEventListener('install',function(e){e.waitUntil(caches.open('shieldvpn-v1').then(function(c){return c.addAll(['.']);}));});self.addEventListener('fetch',function(e){e.respondWith(caches.match(e.request).then(function(r){return r||fetch(e.request);}));});";
+  var blob=new Blob([swCode],{type:'application/javascript'});
+  var swUrl=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(function(){});
+}
+
+// INIT
+document.getElementById('IPV').textContent=realIP;
+document.getElementById('SFLAG').textContent=C[0].f;
+document.getElementById('SNAME').textContent=C[0].n;
+document.getElementById('SMETA').textContent=C[0].r+' · '+C[0].p+'ms';
+document.getElementById('SSPD').textContent=C[0].dl+' Mbps';
+renderPills();
+renderList();
+</script>
+</body>
+</html>
